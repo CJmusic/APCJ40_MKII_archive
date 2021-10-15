@@ -14,8 +14,8 @@ Changes to come:
 
 Special Thanks to: 
 
-gluon: https://github.com/gluon/AbletonLive11_MIDIRemoteScripts
-xnamanahx: https://github.com/xnamahx/APC40_MkIIx
-cylab: https://github.com/cylab/APCequencer
-martinpechmann: https://github.com/martinpechmann/APC400000
+-gluon: https://github.com/gluon/AbletonLive11_MIDIRemoteScripts
+-xnamanahx: https://github.com/xnamahx/APC40_MkIIx
+-cylab: https://github.com/cylab/APCequencer
+-martinpechmann: https://github.com/martinpechmann/APC400000
 
