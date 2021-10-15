@@ -37,6 +37,7 @@ NUM_SCENES = 5
 from .APC_MKIIx.CustomSessionComponent import CustomSessionComponent
 from .APC_MKIIx.GridResolution import GridResolution
 from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
+from .APC_MKIIx.AutoArmComponent import AutoArmComponent
 from .APC_MKIIx.PlayheadElement import PlayheadElement
 from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 
@@ -57,6 +58,11 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         with self.component_guard():
             self._create_controls()
             self._create_bank_toggle()
+            self._create_transport()
+            self._create_device()
+            self._create_view_control()
+            self._create_quantization_selection()
+            self._create_recording()
 
             self._init_background() 
 
@@ -64,12 +70,10 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
             self._create_session()
             self._create_mixer()
-            self._create_transport()
-            self._create_device()
-            self._create_view_control()
-            self._create_quantization_selection()
-            self._create_recording()
             self._session.set_mixer(self._mixer)
+
+            self._init_matrix_modes()
+
         self.set_highlighting_session_component(self._session)
         self.set_device_component(self._device)
 
@@ -258,6 +262,31 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             drum_bank_up_button=self._up_button,
             drum_bank_down_button=self._down_button)
 
+    def _init_matrix_modes(self):
+            """ Switch between Session and StepSequencer modes """
+
+            """here we go trying to switch.... lew  05:53   21/10/17"""
+
+            self._auto_arm = AutoArmComponent(name='Auto_Arm')
+
+            self._matrix_modes = ModesComponent(name='Matrix_Modes', is_root=True)
+            self._matrix_modes.default_behaviour = ImmediateBehaviour()
+            self._matrix_modes.add_mode('disable', [self._matrix_background, self._background, self._mod_background])
+            self._matrix_modes.add_mode('sends', self._session_mode_layers())
+
+            self._matrix_modes.add_mode('user', self._user_mode_layers())
+            # self._matrix_modes.add_mode('user2', self._user2_mode_layers()) 
+
+            self._matrix_modes.add_mode('session', self._session_mode_layers())
+
+        
+
+            # self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, user2_button=self._metronome_button)
+            self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button)
+
+            self._on_matrix_mode_changed.subject = self._matrix_modes
+            self._matrix_modes.selected_mode = 'session'
+
 
     def _init_background(self):
         self._background = BackgroundComponent(is_root=True)
@@ -272,7 +301,67 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._mod_background.layer = Layer(shift_button=self._shift_button)
 
 
-        
+    def _session_mode_layers(self):
+        return [self._session, self._view_control, self._session_zoom]#, self._mixer
+
+       
+    def _user_mode_layers(self):
+        self._drum_group_finder = DrumGroupFinderComponent()
+        self._on_drum_group_changed.subject = self._drum_group_finder
+
+        self._drum_modes = ModesComponent(name='Drum_Modes', is_enabled=False)
+        self._drum_modes.add_mode('sequencer', self._step_sequencer)
+        #self._drum_modes.add_mode('64pads', self._drum_component)  # added 15:18 subday 22/10/17     can maybe look into this. causes issues when trying to scroll.(drumcomp1)
+
+        self._drum_modes.selected_mode = 'sequencer'
+
+        #self._user_modes = ModesComponent(name='User_Modes', is_enabled=False)
+        #self._user_modes.add_mode('drums', [self._drum_modes])
+        #self._user_modes.add_mode('instrument', [self._note_repeat_enabler, self._instrument])
+        #self._user_modes.selected_mode = 'drums'
+
+        return [self._drum_modes, self._view_control, self._matrix_background]  # , self._mixer 
+
+
+    @subject_slot('drum_group')
+    def _on_drum_group_changed(self):
+        #self._shift_button.receive_value(127)
+        #self.schedule_message(1, self.resetshift)
+        self._matrix_background.set_enabled(True)
+        self.schedule_message(1, self.disablebackground)
+
+        if self._matrix_modes.selected_mode != 'session':
+            pass
+            #self._select_note_mode()
+
+
+    @subject_slot('selected_mode')
+    def _on_matrix_mode_changed(self, mode):
+        #self._shift_button.receive_value(127)
+        #self.schedule_message(1, self.resetshift)
+        self._matrix_background.set_enabled(True)
+        self.schedule_message(1, self.disablebackground)
+
+        if self._matrix_modes.selected_mode != 'disabled':
+            self._update_auto_arm(selected_mode=mode)
+            self.reset_controlled_track()
+
+    def _update_auto_arm(self, selected_mode=None):
+        self._auto_arm.set_enabled(selected_mode or self._matrix_modes.selected_mode == 'user')
+
+    def disablebackground(self):
+        self._matrix_background.set_enabled(False)
+
+
+
+    def reset_controlled_track(self, mode=None):
+        #if mode == None:
+        #   mode = self._instrument.selected_mode
+        #if self._instrument and self._instrument.is_enabled() and mode == 'sequence':
+        #    self.release_controlled_track()
+        #else:
+        self.set_controlled_track(self.song().view.selected_track)
+
     @contextmanager
     def component_guard(self):
         """ Customized to inject additional things """
