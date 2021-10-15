@@ -12,6 +12,13 @@ from _Framework.SessionRecordingComponent import SessionRecordingComponent
 from _Framework.SessionZoomingComponent import SessionZoomingComponent
 from _Framework.ClipCreator import ClipCreator
 from _Framework.Util import recursive_map
+
+
+from _Framework.BackgroundComponent import BackgroundComponent, ModifierBackgroundComponent
+from _Framework.SubjectSlot import subject_slot
+from _Framework.Dependency import inject
+
+
 from _APC.APC import APC
 from _APC.DeviceComponent import DeviceComponent
 from _APC.DeviceBankButtonElement import DeviceBankButtonElement
@@ -27,7 +34,12 @@ from .TransportComponent import TransportComponent
 NUM_TRACKS = 8
 NUM_SCENES = 5
 
-from .APC40_MKIIx.CustomSessionComponent import CustomSessionComponent
+from .APC_MKIIx.CustomSessionComponent import CustomSessionComponent
+from .APC_MKIIx.GridResolution import GridResolution
+from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
+from .APC_MKIIx.PlayheadElement import PlayheadElement
+from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+
 
 class APCJ40_MkII(APC, OptimizedControlSurface):
 
@@ -40,6 +52,11 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         with self.component_guard():
             self._create_controls()
             self._create_bank_toggle()
+
+            self._init_background() 
+
+            self._init_step_sequencer()
+
             self._create_session()
             self._create_mixer()
             self._create_transport()
@@ -129,6 +146,17 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._shifted_matrix = ButtonMatrixElement(rows=recursive_map(self._with_shift, self._matrix_rows_raw))
         self._shifted_scene_buttons = ButtonMatrixElement(rows=[[ self._with_shift(button) for button in self._scene_launch_buttons_raw ]])
 
+        self._grid_resolution = GridResolution()
+        self._velocity_slider = ButtonSliderElement(tuple(self._scene_launch_buttons_raw[::-1]))
+        #self._velocity_slider.resource_type = PrioritizedResource
+        double_press_rows = recursive_map(DoublePressElement, self._matrix_rows_raw)
+        self._double_press_matrix = ButtonMatrixElement(name='Double_Press_Matrix', rows=double_press_rows)
+        self._double_press_event_matrix = ButtonMatrixElement(name='Double_Press_Event_Matrix',
+                                                              rows=recursive_map(lambda x: x.double_press,
+                                                                                 double_press_rows))
+        self._playhead = PlayheadElement(self._c_instance.playhead)
+
+
     def _create_bank_toggle(self):
         self._bank_toggle = BankToggleComponent(is_enabled=False, layer=Layer(bank_toggle_button=self._bank_button))
 
@@ -198,3 +226,42 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
     def _product_model_id_byte(self):
         return 41
+
+    def _init_step_sequencer(self):
+        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
+        self._step_sequencer.layer = self._create_step_sequencer_layer()
+
+    def _create_step_sequencer_layer(self):
+        return Layer(
+            velocity_slider=self._velocity_slider,
+            drum_matrix=self._session_matrix.submatrix[:4, 0:5],
+            # [4, 1:5],  mess with this for possible future 32 pad drum rack :
+
+            button_matrix=self._double_press_matrix.submatrix[4:8, 0:4],  # [4:8, 1:5],
+
+            #  next_page_button = self._bank_button,
+
+            #select_button=self._user_button,
+            delete_button=self._stop_all_button,
+            playhead=self._playhead,
+            quantization_buttons=self._stop_buttons,
+            shift_button=self._shift_button,
+            loop_selector_matrix=self._double_press_matrix.submatrix[4:8, 4],
+            # changed from [:8, :1] so as to enable bottem row of rack   . second value clip length rows
+            short_loop_selector_matrix=self._double_press_event_matrix.submatrix[4:8, 4],
+            # changed from [:8, :1] no change noticed as of yet
+            drum_bank_up_button=self._up_button,
+            drum_bank_down_button=self._down_button)
+
+
+    def _init_background(self):
+        self._background = BackgroundComponent(is_root=True)
+        self._background.set_enabled(False)
+        self._background.layer = Layer(stop_buttons=self._stop_buttons)  # , display_line2=self._display_line2, display_line3=self._display_line3, display_line4=self._display_line4, top_buttons=self._select_buttons, bottom_buttons=self._track_state_buttons, scales_button=self._scale_presets_button, octave_up=self._octave_up_button, octave_down=self._octave_down_button, side_buttons=self._side_buttons, repeat_button=self._repeat_button, accent_button=self._accent_button, double_button=self._double_button, in_button=self._in_button, out_button=self._out_button, param_controls=self._global_param_controls, param_touch=self._global_param_touch_buttons, tempo_control_tap=self._tempo_control_tap, master_control_tap=self._master_volume_control_tap, touch_strip=self._touch_strip_control, touch_strip_tap=self._touch_strip_tap, nav_up_button=self._nav_up_button, nav_down_button=self._nav_down_button, nav_left_button=self._nav_left_button, nav_right_button=self._nav_right_button, aftertouch=self._aftertouch_control, pad_parameters=self._pad_parameter_control, _notification=self._notification.use_single_line(2), priority=consts.BACKGROUND_PRIORITY)
+
+        self._matrix_background = BackgroundComponent()
+        self._matrix_background.set_enabled(False)
+        self._matrix_background.layer = Layer(matrix=self._session_matrix)
+
+        self._mod_background = ModifierBackgroundComponent(is_root=True)
+        self._mod_background.layer = Layer(shift_button=self._shift_button)
