@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 from builtins import range
 from functools import partial
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
-from _Framework.ComboElement import ComboElement, DoublePressElement, MultiElement
+from _Framework.ComboElement import ComboElement, DoublePressElement, MultiElement, DoublePressContext
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.Layer import Layer
 from _Framework.ModesComponent import ModesComponent, ImmediateBehaviour, DelayMode, AddLayerMode
@@ -11,7 +11,7 @@ from _Framework.Resource import PrioritizedResource
 from _Framework.SessionRecordingComponent import SessionRecordingComponent
 from _Framework.SessionZoomingComponent import SessionZoomingComponent
 from _Framework.ClipCreator import ClipCreator
-from _Framework.Util import recursive_map
+from _Framework.Util import recursive_map, const
 
 
 from _Framework.BackgroundComponent import BackgroundComponent, ModifierBackgroundComponent
@@ -40,6 +40,8 @@ from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
 from .APC_MKIIx.PlayheadElement import PlayheadElement
 from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 
+from contextlib import contextmanager
+
 
 class APCJ40_MkII(APC, OptimizedControlSurface):
 
@@ -49,6 +51,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._default_skin = make_default_skin()
         self._stop_button_skin = make_stop_button_skin()
         self._crossfade_button_skin = make_crossfade_button_skin()
+        self._double_press_context = DoublePressContext()
+        # self._shift_button = None
+
         with self.component_guard():
             self._create_controls()
             self._create_bank_toggle()
@@ -265,3 +270,21 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
         self._mod_background = ModifierBackgroundComponent(is_root=True)
         self._mod_background.layer = Layer(shift_button=self._shift_button)
+
+
+        
+    @contextmanager
+    def component_guard(self):
+        """ Customized to inject additional things """
+        with super(APCJ40_MkII, self).component_guard():
+
+            with self.make_injector().everywhere():
+                yield
+
+    def make_injector(self):
+        """ Adds some additional stuff to the injector, used in BaseMessenger """
+        return inject(
+            double_press_context=const(self._double_press_context),
+            control_surface=const(self),
+
+            log_message=const(self.log_message))
