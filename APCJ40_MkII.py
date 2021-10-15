@@ -86,6 +86,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._default_skin = make_default_skin()
         self._stop_button_skin = make_stop_button_skin()
         self._crossfade_button_skin = make_crossfade_button_skin()
+        # self._crossfade_button_skin = None
         self._double_press_context = DoublePressContext()
         self._shift_button = None
 
@@ -102,9 +103,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._clip_creator = ClipCreator() 
 
             self._init_background() 
-            # self._init_instrument() #this isn't switching to cleanly
+            self._init_instrument() #this isn't switching to cleanly
             self._init_step_sequencer() #this isn't working at all
-            # self._init_drum_component() 
+            self._init_drum_component() 
             # self._init_note_repeat() #this is always on the toggle isn't working
 
             self._create_session()
@@ -288,6 +289,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
     def _create_mixer(self):
         self._mixer = MixerComponent(NUM_TRACKS, auto_name=True, is_enabled=False, invert_mute_feedback=True, layer=Layer(volume_controls=self._volume_controls, arm_buttons=self._arm_buttons, solo_buttons=self._solo_buttons, mute_buttons=self._mute_buttons, shift_button=self._shift_button, track_select_buttons=self._select_buttons, prehear_volume_control=self._prehear_control, crossfader_control=self._crossfader_control, crossfade_buttons=self._crossfade_buttons))
+        # self._mixer = MixerComponent(NUM_TRACKS, auto_name=True, is_enabled=False, invert_mute_feedback=True, layer=Layer(volume_controls=self._volume_controls, arm_buttons=self._arm_buttons, solo_buttons=self._solo_buttons, mute_buttons=self._mute_buttons, shift_button=self._shift_button, track_select_buttons=self._select_buttons, prehear_volume_control=self._prehear_control, crossfader_control=self._crossfader_control))
         self._mixer.master_strip().layer = Layer(volume_control=self._master_volume_control, select_button=self._master_select_button)
         self._encoder_mode = ModesComponent(name=u'Encoder_Mode', is_enabled=False)
         self._encoder_mode.default_behaviour = ImmediateBehaviour()

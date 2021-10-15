@@ -12,6 +12,14 @@ Changes to come:
 
 - Step Sequencer 
 
+Bugs with Step Sequencer: 
+
+- Crossfade buttons are always lit 
+- Velocity slider doesn't work 
+- Note repeat is always engaged (it's been disabled)
+- Nudge isn't working 
+- In NoteEditorComponent and APCNoteEditorComponent the tuple (x, y) isn't handled properly 
+
 Special Thanks to: 
 
 gluon: https://github.com/gluon/AbletonLive11_MIDIRemoteScripts
