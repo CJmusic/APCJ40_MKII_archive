@@ -75,6 +75,15 @@ sys.modules['_APC.ControlElementUtils'] = ControlElementUtils
 sys.modules['_APC.SkinDefault'] = SkinDefault
 sys.modules['_APC.SessionComponent'] = SessionComponent
 
+
+# from _default. import Colors
+# from _default.BankToggleComponent import BankToggleComponent
+# from _default.MixerComponent import MixerComponent
+# from _default.QuantizationComponent import QuantizationComponent
+# from _default.TransportComponent import TransportComponent
+
+from .StepSeqComponent import StepSeqComponent
+
 NUM_TRACKS = 8
 NUM_SCENES = 5
 
@@ -337,8 +346,10 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
     def _init_step_sequencer(self):
-        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
-        self._step_sequencer.layer = self._create_step_sequencer_layer()
+        # self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
+        self._drum_step_sequencer = DrumStepSeqComponent(self._clip_creator, self._skin, name=u'Drum_Step_Sequencer', grid_resolution=self._grid_resolution, note_editor_component=drum_note_editor, instrument_component=self._drum_component, is_enabled=False)
+
+        # self._step_sequencer.layer = self._create_step_sequencer_layer()
 
     def _create_step_sequencer_layer(self):
         return Layer(
