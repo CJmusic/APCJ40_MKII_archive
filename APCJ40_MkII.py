@@ -19,11 +19,12 @@ from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 # from _APC.SessionComponent import SessionComponent
 from _APC.ControlElementUtils import make_button, make_encoder, make_slider, make_ring_encoder, make_pedal_button
 from _APC.SkinDefault import make_rgb_skin, make_default_skin, make_stop_button_skin, make_crossfade_button_skin
-from . import Colors
-from .BankToggleComponent import BankToggleComponent
-from .MixerComponent import MixerComponent
-from .QuantizationComponent import QuantizationComponent
-from .TransportComponent import TransportComponent
+
+from _default. import Colors
+from _default.BankToggleComponent import BankToggleComponent
+from _default.MixerComponent import MixerComponent
+from _default.QuantizationComponent import QuantizationComponent
+from _default.TransportComponent import TransportComponent
 NUM_TRACKS = 8
 NUM_SCENES = 5
 
