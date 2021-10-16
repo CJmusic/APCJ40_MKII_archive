@@ -5,10 +5,13 @@ from ableton.v2.base import forward_property, listenable_property, listens, live
 from ableton.v2.control_surface import Component
 from ableton.v2.control_surface.components import AccentComponent
 from ableton.v2.control_surface.elements import to_midi_value
-from pushbase.loop_selector_component import LoopSelectorComponent
-from pushbase.playhead_component import PlayheadComponent
+# from pushbase.loop_selector_component import LoopSelectorComponent
+# from pushbase.playhead_component import PlayheadComponent
 from pushbase.note_editor_paginator import NoteEditorPaginator
 from pushbase.step_duplicator import StepDuplicatorComponent
+
+from .LoopSelectorComponent import LoopSelectorComponent
+from .PlayheadComponent import PlayheadComponent
 
 from .APC_MKIIx.MatrixMaps import PLAYHEAD_FEEDBACK_CHANNELS
 class StepSeqComponent(Component):
@@ -19,12 +22,13 @@ class StepSeqComponent(Component):
     this layout.
     """
 
-    def __init__(self, clip_creator = None, skin = None, grid_resolution = None, note_editor_component = None, instrument_component = None, *a, **k):
-        super(StepSeqComponent, self).__init__(*a, **k)
-        assert clip_creator is not None
-        assert skin is not None
-        assert instrument_component is not None
-        assert note_editor_component is not None
+    def __init__(self, clip_creator = None, skin = None, grid_resolution = None, note_editor_component = None, instrument_component = None, song = None, *a, **k):
+        # super(StepSeqComponent, self).__init__(*a, **k)
+        # assert clip_creator is not None
+        # assert skin is not None
+        # assert instrument_component is not None
+        # assert note_editor_component is not None
+        # self._song = song() 
         self._grid_resolution = grid_resolution
         self._note_editor = note_editor_component
         self._loop_selector = LoopSelectorComponent(parent=self, clip_creator=clip_creator, default_size=16)

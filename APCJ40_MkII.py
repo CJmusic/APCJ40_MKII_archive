@@ -25,7 +25,7 @@ from _APC.APC import APC
 from _APC.DeviceComponent import DeviceComponent
 from _APC.DeviceBankButtonElement import DeviceBankButtonElement
 from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
-from _APC.SessionComponent import SessionComponent
+# from _APC.SessionComponent import SessionComponent
 from _APC.ControlElementUtils import make_button, make_encoder, make_slider, make_ring_encoder, make_pedal_button
 from _APC.SkinDefault import make_rgb_skin, make_default_skin, make_stop_button_skin, make_crossfade_button_skin
 from .APC_MKIIx import Colors
@@ -113,8 +113,8 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
             self._init_background() 
             self._init_instrument() #this isn't switching to cleanly
-            self._init_step_sequencer() #this isn't working at all
             self._init_drum_component() 
+            self._init_step_sequencer() #this isn't working at all
             # self._init_note_repeat() #this is always on the toggle isn't working
 
             self._create_session()
@@ -347,9 +347,16 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
     def _init_step_sequencer(self):
         # self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
-        self._drum_step_sequencer = DrumStepSeqComponent(self._clip_creator, self._skin, name=u'Drum_Step_Sequencer', grid_resolution=self._grid_resolution, note_editor_component=drum_note_editor, instrument_component=self._drum_component, is_enabled=False)
-
         # self._step_sequencer.layer = self._create_step_sequencer_layer()
+
+
+        # self._drum_velocity_levels = VelocityLevelsComponent(target_note_provider=self._drum_component, skin_base_key=self.drum_group_velocity_levels_skin, is_enabled=False, layer=Layer(velocity_levels=u'velocity_levels_element', select_button=u'select_button'))
+        # drum_note_editor = self.note_editor_class(clip_creator=self._clip_creator, grid_resolution=self._grid_resolution, skin_base_key=self.drum_group_note_editor_skin, velocity_provider=self._drum_velocity_levels, velocity_range_thresholds=self.note_editor_velocity_range_thresholds)
+        # drum_note_editor = self.note_editor_class(clip_creator=self._clip_creator, grid_resolution=self._grid_resolution)
+        # self._note_editor_settings_component.add_editor(drum_note_editor)
+
+        self._drum_step_sequencer = StepSeqComponent(self._clip_creator, self._skin, name=u'Drum_Step_Sequencer', grid_resolution=self._grid_resolution, instrument_component=self._drum_component, is_enabled=False)
+
 
     def _create_step_sequencer_layer(self):
         return Layer(
