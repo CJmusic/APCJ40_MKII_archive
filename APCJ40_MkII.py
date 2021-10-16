@@ -191,7 +191,6 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         #  [ make_button(channel, 66, name='%d_Crossfade_Button' % channel, skin=self._crossfade_button_skin) for channel in range(NUM_TRACKS)
         #  ]])
         self._crossfade_buttons = ButtonMatrixElement(rows=[[ make_button(channel, 66, name=u'%d_Crossfade_Button' % channel, skin=self._crossfade_button_skin) for channel in range(NUM_TRACKS) ]])
-
         self._select_buttons = ButtonMatrixElement(rows=[
          self._raw_select_buttons])
         self._master_select_button = make_on_off_button(channel=0, identifier=80, name='Master_Select_Button')
@@ -239,8 +238,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
          ]])
 
         self._grid_resolution = GridResolution()
+        # self._velocity_slider = ButtonSliderElement(tuple(self._scene_launch_buttons_raw[::-1]))
         self._velocity_slider = ButtonSliderElement(tuple(self._scene_launch_buttons_raw[::-1]))
-        #self._velocity_slider.resource_type = PrioritizedResource
+        self._velocity_slider.resource_type = PrioritizedResource
         double_press_rows = recursive_map(DoublePressElement, self._matrix_rows_raw)
         self._double_press_matrix = ButtonMatrixElement(name='Double_Press_Matrix', rows=double_press_rows)
         self._double_press_event_matrix = ButtonMatrixElement(name='Double_Press_Event_Matrix',
