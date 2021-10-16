@@ -434,6 +434,7 @@ class NoteEditorSettingsComponent(ModesComponent):
         if self._request_hide and not any(map(lambda e: e and e.is_pressed(), self._encoders or [])):
             self.selected_mode = 'disabled'
             self._request_hide = False
+        pass
 
     def on_enabled_changed(self):
         super(NoteEditorSettingsComponent, self).on_enabled_changed()

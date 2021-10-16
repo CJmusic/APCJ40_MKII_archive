@@ -392,8 +392,9 @@ class NoteEditorComponent(CompoundComponent, Subject):
     @property
     def active_steps(self):
 
-        def get_time_range(x, y):
-            xy = (x,y)
+        def get_time_range(xy):
+            x= xy[0]
+            y = xy[1]
             time = self._get_step_start_time(x, y)
             return (time, time + self._get_step_length())
 
@@ -403,12 +404,13 @@ class NoteEditorComponent(CompoundComponent, Subject):
         for step in self._pressed_steps + self._modified_steps:
             self._on_release_step(step, do_delete_notes=False)
 
-    def _on_release_step(self, step, do_delete_notes = True):
+    def _on_release_step(self, x,y, do_delete_notes = True):
+        step = (x,y)
         self._step_tap_tasks[step].kill()
         if step in self._pressed_steps:
             if do_delete_notes:
-                self._delete_notes_in_step(step)
-            self._pressed_steps.remove(step)
+                self._delete_notes_in_step(x,y)
+            self._pressed_steps.remove(x,y)
             self._add_note_in_step(step)
         if step in self._modified_steps:
             self._modified_steps.remove(step)
@@ -432,6 +434,7 @@ class NoteEditorComponent(CompoundComponent, Subject):
         Add note in given step if there are none in there, otherwise
         select the step for potential deletion or modification
         """
+        # step = (x,y)
         if self._sequencer_clip != None:
             x, y = step
             time = self._get_step_start_time(x, y)
@@ -458,9 +461,8 @@ class NoteEditorComponent(CompoundComponent, Subject):
                 return True
         return False
 
-    def _delete_notes_in_step(self, xy):
-        x = xy[0]
-        y = xy[1]
+    def _delete_notes_in_step(self, x, y):
+        step = (x,y)
         """ Delete all notes in the given step """
         if self._sequencer_clip:
             time_step = self._time_step(self._get_step_start_time(x, y))
