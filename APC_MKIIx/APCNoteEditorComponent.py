@@ -1,5 +1,5 @@
 import sys
-from itertools import chain#, map#
+from itertools import chain
 from _Framework.SubjectSlot import subject_slot, subject_slot_group
 from .NoteEditorComponent import NoteEditorComponent, most_significant_note
 from .APCMessenger import APCMessenger
@@ -66,11 +66,8 @@ class APCNoteEditorComponent(NoteEditorComponent, APCMessenger):
     velocity and mute states
     """
     step_colors = ['NoteEditor.StepDisabled'] * self._get_step_count()
-    # x, y = self.step
-    # x = self.step(1)
-    # y = self.step(2)
     width = self._width
-    coords_to_index = lambda x: x[1] + x[2] * width ### DONT KNOW ABOUT THIS STEP
+    coords_to_index = lambda xy: xy[0] + xy[1] * width
     editing_indices = set(map(coords_to_index, self._modified_steps))
     selected_indices = set(map(coords_to_index, self._pressed_steps))
     last_editing_notes = []
