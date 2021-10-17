@@ -46,7 +46,7 @@ from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
 
 from .APC_MKIIx.NoteRepeatComponent import NoteRepeatComponent
 from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
-# from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 from .APC_MKIIx.GridResolution import GridResolution
 from .APC_MKIIx.PlayheadElement import PlayheadElement
 from .APC_MKIIx.MelodicComponent import MelodicComponent
@@ -82,7 +82,7 @@ sys.modules['_APC.SessionComponent'] = SessionComponent
 # from _default.QuantizationComponent import QuantizationComponent
 # from _default.TransportComponent import TransportComponent
 
-from .StepSeqComponent import StepSeqComponent
+# from .StepSeqComponent import StepSeqComponent
 
 NUM_TRACKS = 8
 NUM_SCENES = 5
@@ -346,8 +346,8 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
     def _init_step_sequencer(self):
-        # self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
-        # self._step_sequencer.layer = self._create_step_sequencer_layer()
+        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
+        self._step_sequencer.layer = self._create_step_sequencer_layer()
 
 
         # self._drum_velocity_levels = VelocityLevelsComponent(target_note_provider=self._drum_component, skin_base_key=self.drum_group_velocity_levels_skin, is_enabled=False, layer=Layer(velocity_levels=u'velocity_levels_element', select_button=u'select_button'))
@@ -355,7 +355,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # drum_note_editor = self.note_editor_class(clip_creator=self._clip_creator, grid_resolution=self._grid_resolution)
         # self._note_editor_settings_component.add_editor(drum_note_editor)
 
-        self._drum_step_sequencer = StepSeqComponent(self._clip_creator, self._skin, name=u'Drum_Step_Sequencer', grid_resolution=self._grid_resolution, instrument_component=self._drum_component, is_enabled=False)
+        # self._drum_step_sequencer = StepSeqComponent(self._clip_creator, self._skin, name=u'Drum_Step_Sequencer', grid_resolution=self._grid_resolution, instrument_component=self._drum_component, is_enabled=False)
 
 
     def _create_step_sequencer_layer(self):

@@ -55,8 +55,8 @@ class StepSeqComponent(Component):
          (84, 90),
          (76, 82),
          (68, 74)))), feedback_channels=PLAYHEAD_FEEDBACK_CHANNELS)
-        self._accent_component = AccentComponent(parent=self)
-        self.__on_accent_mode_changed.subject = self._accent_component
+        # self._accent_component = AccentComponent(parent=self)
+        # self.__on_accent_mode_changed.subject = self._accent_component
         self._skin = skin
         self._playhead_color = u'NoteEditor.Playhead'
 
@@ -68,12 +68,12 @@ class StepSeqComponent(Component):
         self._playhead_component.set_playhead(playhead)
         self._update_playhead_color()
 
-    def set_full_velocity(self, full_velocity):
-        self._accent_component.set_full_velocity(full_velocity)
-        self.__on_accent_mode_changed()
+    # def set_full_velocity(self, full_velocity):
+    #     self._accent_component.set_full_velocity(full_velocity)
+    #     self.__on_accent_mode_changed()
 
-    def set_accent_button(self, accent_button):
-        self._accent_component.accent_button.set_control_element(accent_button)
+    # def set_accent_button(self, accent_button):
+    #     self._accent_component.accent_button.set_control_element(accent_button)
 
     def _get_playhead_color(self):
         return self._playhead_color
@@ -84,121 +84,121 @@ class StepSeqComponent(Component):
 
     playhead_color = property(_get_playhead_color, _set_playhead_color)
 
-    @listenable_property
-    def editing_note_regions(self):
-        return self._note_editor.editing_note_regions
+    # @listenable_property
+    # def editing_note_regions(self):
+    #     return self._note_editor.editing_note_regions
 
-    @listenable_property
-    def editable_pitches(self):
-        return self._note_editor.editing_notes
+    # @listenable_property
+    # def editable_pitches(self):
+    #     return self._note_editor.editing_notes
 
-    @listenable_property
-    def step_length(self):
-        return self._grid_resolution.step_length
+    # @listenable_property
+    # def step_length(self):
+    #     return self._grid_resolution.step_length
 
-    @listenable_property
-    def row_start_times(self):
-        return self._note_editor.get_row_start_times()
+    # @listenable_property
+    # def row_start_times(self):
+    #     return self._note_editor.get_row_start_times()
 
-    @listens(u'index')
-    def __on_grid_resolution_changed(self, *a):
-        if self.is_enabled():
-            self.notify_row_start_times()
-            self.notify_step_length()
+    # @listens(u'index')
+    # def __on_grid_resolution_changed(self, *a):
+    #     if self.is_enabled():
+    #         self.notify_row_start_times()
+    #         self.notify_step_length()
 
-    @listens(u'page_index')
-    def _on_page_index_changed(self):
-        if self.is_enabled():
-            self.notify_row_start_times()
+    # @listens(u'page_index')
+    # def _on_page_index_changed(self):
+    #     if self.is_enabled():
+    #         self.notify_row_start_times()
 
-    @listens(u'page_length')
-    def _on_page_length_changed(self):
-        if self.is_enabled():
-            self.notify_row_start_times()
+    # @listens(u'page_length')
+    # def _on_page_length_changed(self):
+    #     if self.is_enabled():
+    #         self.notify_row_start_times()
 
-    @listens(u'active_steps')
-    def _on_active_steps_changed(self):
-        if self.is_enabled():
-            self.notify_editing_note_regions()
+    # @listens(u'active_steps')
+    # def _on_active_steps_changed(self):
+    #     if self.is_enabled():
+    #         self.notify_editing_note_regions()
 
-    @listens(u'modify_all_notes')
-    def _on_modify_all_notes_changed(self):
-        if self.is_enabled():
-            self.notify_editing_note_regions()
+    # @listens(u'modify_all_notes')
+    # def _on_modify_all_notes_changed(self):
+    #     if self.is_enabled():
+    #         self.notify_editing_note_regions()
 
-    @listens(u'activated')
-    def __on_accent_mode_changed(self):
-        self._note_editor.full_velocity = self._accent_component.activated
+    # @listens(u'activated')
+    # def __on_accent_mode_changed(self):
+    #     self._note_editor.full_velocity = self._accent_component.activated
 
-    def _is_triplet_quantization(self):
-        return self._grid_resolution.clip_grid[1]
+    # def _is_triplet_quantization(self):
+    #     return self._grid_resolution.clip_grid[1]
 
-    def _update_playhead_color(self):
-        if self.is_enabled() and self._skin and self._playhead:
-            self._playhead.velocity = to_midi_value(self._skin[self._playhead_color])
+    # def _update_playhead_color(self):
+    #     if self.is_enabled() and self._skin and self._playhead:
+    #         self._playhead.velocity = to_midi_value(self._skin[self._playhead_color])
 
-    def set_select_button(self, button):
-        self._instrument.select_button.set_control_element(button)
-        self._loop_selector.select_button.set_control_element(button)
+    # def set_select_button(self, button):
+    #     self._instrument.select_button.set_control_element(button)
+    #     self._loop_selector.select_button.set_control_element(button)
 
-    def set_mute_button(self, button):
-        self._note_editor.mute_button.set_control_element(button)
+    # def set_mute_button(self, button):
+    #     self._note_editor.mute_button.set_control_element(button)
 
-    def set_delete_button(self, button):
-        self._instrument.delete_button.set_control_element(button)
-        self._loop_selector.delete_button.set_control_element(button)
+    # def set_delete_button(self, button):
+    #     self._instrument.delete_button.set_control_element(button)
+    #     self._loop_selector.delete_button.set_control_element(button)
 
-    def set_loop_selector_matrix(self, matrix):
-        self._loop_selector.set_loop_selector_matrix(matrix)
+    # def set_loop_selector_matrix(self, matrix):
+    #     self._loop_selector.set_loop_selector_matrix(matrix)
 
-    def set_short_loop_selector_matrix(self, matrix):
-        self._loop_selector.set_short_loop_selector_matrix(matrix)
+    # def set_short_loop_selector_matrix(self, matrix):
+    #     self._loop_selector.set_short_loop_selector_matrix(matrix)
 
-    def set_duplicate_button(self, button):
-        self._step_duplicator.button.set_control_element(button)
+    # def set_duplicate_button(self, button):
+    #     self._step_duplicator.button.set_control_element(button)
 
-    def set_button_matrix(self, matrix):
-        self._note_editor.set_matrix(matrix)
+    # def set_button_matrix(self, matrix):
+    #     self._note_editor.set_matrix(matrix)
 
-    def set_quantization_buttons(self, buttons):
-        self._grid_resolution.quantization_buttons.set_control_element(buttons)
+    # def set_quantization_buttons(self, buttons):
+    #     self._grid_resolution.quantization_buttons.set_control_element(buttons)
 
-    def set_velocity_control(self, control):
-        self._note_editor.set_velocity_control(control)
+    # def set_velocity_control(self, control):
+    #     self._note_editor.set_velocity_control(control)
 
-    def set_length_control(self, control):
-        self._note_editor.set_length_control(control)
+    # def set_length_control(self, control):
+    #     self._note_editor.set_length_control(control)
 
-    def set_nudge_control(self, control):
-        self._note_editor.set_nudge_control(control)
+    # def set_nudge_control(self, control):
+    #     self._note_editor.set_nudge_control(control)
 
-    def update(self):
-        super(StepSeqComponent, self).update()
-        if self.is_enabled():
-            self._on_selected_notes_changed(self._instrument.selected_notes_provider.selected_notes)
-            self._update_playhead_color()
-            self._on_detail_clip_changed()
-            self.notify_row_start_times()
-            self.notify_step_length()
+    # def update(self):
+    #     super(StepSeqComponent, self).update()
+    #     if self.is_enabled():
+    #         self._on_selected_notes_changed(self._instrument.selected_notes_provider.selected_notes)
+    #         self._update_playhead_color()
+    #         self._on_detail_clip_changed()
+    #         self.notify_row_start_times()
+    #         self.notify_step_length()
 
-    @listens(u'detail_clip')
-    def _on_detail_clip_changed(self):
-        clip = self.song.view.detail_clip
-        clip = clip if liveobj_valid(clip) and clip.is_midi_clip else None
-        self._detail_clip = clip
-        self._note_editor.set_detail_clip(clip)
-        self._loop_selector.set_detail_clip(clip)
-        self._playhead_component.set_clip(self._detail_clip)
+    # @listens(u'detail_clip')
+    # def _on_detail_clip_changed(self):
+    #     clip = self.song.view.detail_clip
+    #     clip = clip if liveobj_valid(clip) and clip.is_midi_clip else None
+    #     self._detail_clip = clip
+    #     self._note_editor.set_detail_clip(clip)
+    #     self._loop_selector.set_detail_clip(clip)
+    #     self._playhead_component.set_clip(self._detail_clip)
 
-    @listens(u'selected_notes')
-    def _on_selected_notes_changed(self, notes):
-        if self.is_enabled():
-            self._note_editor.editing_notes = notes
-            self.notify_editable_pitches()
+    # @listens(u'selected_notes')
+    # def _on_selected_notes_changed(self, notes):
+    #     if self.is_enabled():
+    #         self._note_editor.editing_notes = notes
+    #         self.notify_editable_pitches()
 
-    @listens(u'pressed_pads')
-    def _on_pressed_pads_changed(self, _):
-        self._note_editor.modify_all_notes_enabled = len(self._instrument.pressed_pads) > 0
+    # @listens(u'pressed_pads')
+    # def _on_pressed_pads_changed(self, _):
+    #     self._note_editor.modify_all_notes_enabled = len(self._instrument.pressed_pads) > 0
 
 
 class DrumStepSeqComponent(StepSeqComponent):
