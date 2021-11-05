@@ -31,7 +31,7 @@ def color_for_note(note):
 
 def most_significant_note(notes):
     # if notes:    
-        return max(notes, key=lambda n: n[3])
+    return max(notes, key=lambda n: n[3])
     # else:
         # return notes
 
