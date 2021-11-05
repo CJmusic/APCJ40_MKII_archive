@@ -439,26 +439,26 @@ class NoteEditorComponent(CompoundComponent, Subject):
             x, y = step
             time = self._get_step_start_time(x, y)
             notes = self._time_step(time).filter_notes(self._clip_notes)
-            if notes:
-                if modify_existing:
-                    most_significant_velocity = most_significant_note(notes)[3]
-                    if self._mute_button and self._mute_button.is_pressed() or most_significant_velocity != 127 and self.full_velocity:
-                        self._trigger_modification(step, immediate=True)
-            else:
-                pitch = self._note_index
-                mute = self._mute_button and self._mute_button.is_pressed()
-                velocity = 127 if self.full_velocity else DEFAULT_VELOCITY
-                if self._velocity != None:
-                    velocity = self._velocity
-                note = (pitch,
-                 time,
-                 self._get_step_length(),
-                 velocity,
-                 mute)
-                self._sequencer_clip.set_notes((note,))
-                self._sequencer_clip.deselect_all_notes()
-                self._trigger_modification(step, done=True)
-                return True
+            # if notes:
+            #     if modify_existing:
+            #         most_significant_velocity = most_significant_note(notes)[3]
+            #         if self._mute_button and self._mute_button.is_pressed() or most_significant_velocity != 127 and self.full_velocity:
+            #             self._trigger_modification(step, immediate=True)
+            # else:
+            pitch = self._note_index
+            mute = self._mute_button and self._mute_button.is_pressed()
+            velocity = 127 if self.full_velocity else DEFAULT_VELOCITY
+            if self._velocity != None:
+                velocity = self._velocity
+            note = (pitch,
+                time,
+                self._get_step_length(),
+                velocity,
+                mute)
+            self._sequencer_clip.set_notes((note,))
+            self._sequencer_clip.deselect_all_notes()
+            self._trigger_modification(step, done=True)
+            return True
         return False
 
     def _delete_notes_in_step(self, x, y):
