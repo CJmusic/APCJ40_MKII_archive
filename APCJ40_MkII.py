@@ -46,7 +46,7 @@ from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
 
 from .APC_MKIIx.NoteRepeatComponent import NoteRepeatComponent
 from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
-from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+# from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 from .APC_MKIIx.GridResolution import GridResolution
 from .APC_MKIIx.PlayheadElement import PlayheadElement
 from .APC_MKIIx.MelodicComponent import MelodicComponent
@@ -346,7 +346,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
     def _init_step_sequencer(self):
-        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution, clip_creator=ClipCreator(), skin=make_default_skin())
+        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
         self._step_sequencer.layer = self._create_step_sequencer_layer()
 
 

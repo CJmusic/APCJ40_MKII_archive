@@ -265,7 +265,7 @@ class NoteEditorComponent(CompoundComponent, Subject):
         """ get notes from clip for offline array """
         if self._sequencer_clip and self._note_index != None:
             time_start, time_length = self._get_clip_notes_time_range()
-            self._clip_notes = self._sequencer_clip.get_notes(time_start, self._note_index, time_length, 1)
+            self._clip_notes = self._sequencer_clip.get_notes(time_start, int(self._note_index), time_length, 1)
         else:
             self._clip_notes = []
         self._update_editor_matrix()
@@ -467,7 +467,8 @@ class NoteEditorComponent(CompoundComponent, Subject):
         if self._sequencer_clip:
             time_step = self._time_step(self._get_step_start_time(x, y))
             for time, length in time_step.connected_time_ranges():
-                self._sequencer_clip.remove_notes_extended(time, self._note_index, length, 1) # remove_notes deprecated
+                # self._sequencer_clip.remove_notes_extended(time, self._note_index, length, 1) # remove_notes deprecated
+                self._sequencer_clip.remove_notes_extended(int(self._note_index),1 , time, length) # remove_notes deprecated
 
 
     #added 10/17
