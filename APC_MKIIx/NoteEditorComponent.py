@@ -30,8 +30,11 @@ def color_for_note(note):
 
 
 def most_significant_note(notes):
-    # notes = list(notes)
-    return max(notes, key=lambda n: n[3])
+    # if notes:    
+        return max(notes, key=lambda n: n[3])
+    # else:
+        # return notes
+
         
 
 
@@ -75,7 +78,7 @@ class TimeStep(object):
             return step_end < note_end
 
     def filter_notes(self, notes):
-        return filter(self.includes_note, notes)
+        return list(filter(self.includes_note, notes))
 
     def clamp(self, time, extra_time = 0.0):
         return clamp(time + extra_time, self.left_boundary(), self.right_boundary())
