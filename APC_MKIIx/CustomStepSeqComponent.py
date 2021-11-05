@@ -149,7 +149,7 @@ class StepSeqComponent(CompoundComponent):
         note_editor_settings and self.register_component(note_editor_settings)
         self._note_editor, self._loop_selector, self._big_loop_selector, self._drum_group = self.register_components(
             APCNoteEditorComponent(settings_mode=note_editor_settings, clip_creator=clip_creator,
-                                grid_resolution=self._grid_resolution),
+                                  grid_resolution=self._grid_resolution),
             LoopSelectorComponent(clip_creator=clip_creator),
             LoopSelectorComponent(clip_creator=clip_creator, measure_length=0.25),  # must match loop selector
             DrumGroupComponent()

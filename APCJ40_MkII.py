@@ -346,7 +346,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
     def _init_step_sequencer(self):
-        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution)
+        self._step_sequencer = StepSeqComponent(grid_resolution=self._grid_resolution, clip_creator=ClipCreator(), skin=make_default_skin())
         self._step_sequencer.layer = self._create_step_sequencer_layer()
 
 
