@@ -30,7 +30,9 @@ def color_for_note(note):
 
 
 def most_significant_note(notes):
+    # notes = list(notes)
     return max(notes, key=lambda n: n[3])
+        
 
 
 MAX_CLIP_LENGTH = 100000000
@@ -284,7 +286,7 @@ class NoteEditorComponent(CompoundComponent, Subject):
         last_editing_notes = []
         for time_step, index in self._visible_steps():
             notes = time_step.filter_notes(self._clip_notes)
-            if len(notes) > 0:
+            if len(list(notes)) > 0:
                 last_editing_notes = []
                 if index in selected_indices:
                     color = 'NoteEditor.StepSelected'
@@ -440,25 +442,26 @@ class NoteEditorComponent(CompoundComponent, Subject):
             time = self._get_step_start_time(x, y)
             notes = self._time_step(time).filter_notes(self._clip_notes)
             # if notes:
-            #     if modify_existing:
-            #         most_significant_velocity = most_significant_note(notes)[3]
-            #         if self._mute_button and self._mute_button.is_pressed() or most_significant_velocity != 127 and self.full_velocity:
-            #             self._trigger_modification(step, immediate=True)
-            # else:
-            pitch = self._note_index
-            mute = self._mute_button and self._mute_button.is_pressed()
-            velocity = 127 if self.full_velocity else DEFAULT_VELOCITY
-            if self._velocity != None:
-                velocity = self._velocity
-            note = (pitch,
-                time,
-                self._get_step_length(),
-                velocity,
-                mute)
-            self._sequencer_clip.set_notes((note,))
-            self._sequencer_clip.deselect_all_notes()
-            self._trigger_modification(step, done=True)
-            return True
+            if len(notes) > 0:
+                if modify_existing:
+                    most_significant_velocity =  most_significant_note(notes)[3]
+                    if self._mute_button and self._mute_button.is_pressed() or most_significant_velocity != 127 and self.full_velocity:
+                        self._trigger_modification(step, immediate=True)
+            else:
+                pitch = self._note_index
+                mute = self._mute_button and self._mute_button.is_pressed()
+                velocity = 127 if self.full_velocity else DEFAULT_VELOCITY
+                if self._velocity != None:
+                    velocity = self._velocity
+                note = (pitch,
+                    time,
+                    self._get_step_length(),
+                    velocity,
+                    mute)
+                self._sequencer_clip.set_notes((note,))
+                self._sequencer_clip.deselect_all_notes()
+                self._trigger_modification(step, done=True)
+                return True
         return False
 
     def _delete_notes_in_step(self, x, y):
