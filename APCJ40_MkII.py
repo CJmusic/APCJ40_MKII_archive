@@ -1,17 +1,25 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/Live/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APCJ40_MkII/APCJ40_MkII.py
 from __future__ import absolute_import, print_function, unicode_literals
 from builtins import range
 from functools import partial
+from contextlib import contextmanager
+import sys
+
 from _Framework.ButtonMatrixElement import ButtonMatrixElement
-from _Framework.ComboElement import ComboElement, DoublePressElement, MultiElement
+from _Framework.ComboElement import ComboElement, DoublePressElement, MultiElement, DoublePressContext
 from _Framework.ControlSurface import OptimizedControlSurface
 from _Framework.Layer import Layer
-from _Framework.ModesComponent import ModesComponent, ImmediateBehaviour, DelayMode, AddLayerMode
+from _Framework.ModesComponent import ModesComponent, ImmediateBehaviour, DelayMode, AddLayerMode, EnablingModesComponent
 from _Framework.Resource import PrioritizedResource
 from _Framework.SessionRecordingComponent import SessionRecordingComponent
 from _Framework.SessionZoomingComponent import SessionZoomingComponent
 from _Framework.ClipCreator import ClipCreator
-from _Framework.Util import recursive_map
+from _Framework.Util import const, recursive_map
+
+from _Framework.BackgroundComponent import BackgroundComponent, ModifierBackgroundComponent
+from _Framework.SubjectSlot import subject_slot
+from _Framework.Dependency import inject
+
+
 from _APC.APC import APC
 from _APC.DeviceComponent import DeviceComponent
 from _APC.DeviceBankButtonElement import DeviceBankButtonElement
@@ -19,16 +27,64 @@ from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 # from _APC.SessionComponent import SessionComponent
 from _APC.ControlElementUtils import make_button, make_encoder, make_slider, make_ring_encoder, make_pedal_button
 from _APC.SkinDefault import make_rgb_skin, make_default_skin, make_stop_button_skin, make_crossfade_button_skin
+from .APC_MKIIx import Colors
+from .APC_MKIIx.BankToggleComponent import BankToggleComponent
+from .APC_MKIIx.MixerComponent import MixerComponent
+from .APC_MKIIx.QuantizationComponent import QuantizationComponent
+from .APC_MKIIx.TransportComponent import TransportComponent
 
-from .default import Colors
-from .default.BankToggleComponent import BankToggleComponent
-from .default.MixerComponent import MixerComponent
-from .default.QuantizationComponent import QuantizationComponent
-from .default.TransportComponent import TransportComponent
+
+from .APC_MKIIx import Colors, consts
+from .APC_MKIIx.BankToggleComponent import BankToggleComponent
+from .APC_MKIIx.MixerComponent import MixerComponent
+from .APC_MKIIx.QuantizationComponent import QuantizationComponent
+from .APC_MKIIx.TransportComponent import TransportComponent
+from .APC_MKIIx.CustomSessionComponent import CustomSessionComponent
+from .APC_MKIIx.SkinDefault import make_default_skin as make_custom_skin
+from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
+
+from .APC_MKIIx.NoteRepeatComponent import NoteRepeatComponent
+from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+# from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+from .APC_MKIIx.GridResolution import GridResolution
+from .APC_MKIIx.PlayheadElement import PlayheadElement
+from .APC_MKIIx.MelodicComponent import MelodicComponent
+from .APC_MKIIx.ControlElementUtils import make_button, make_ring_encoder
+from .APC_MKIIx.MatrixMaps import FEEDBACK_CHANNELS
+from .APC_MKIIx.CustomModesComponent import CustomReenterBehaviour
+from .APC_MKIIx.NoteSettings import NoteEditorSettingsComponent
+
+
+from .APC_MKIIx import ControlElementUtils
+from .APC_MKIIx import SkinDefault
+from .APC_MKIIx import SessionComponent
+
+
+from .APC_MKIIx.SessionComponent import SessionComponent
+
+from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
+from .APC_MKIIx.AutoArmComponent import AutoArmComponent
+from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
+from .APC_MKIIx.ButtonElement import ButtonElement
+from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
+
+# from ableton.v2.control_surface.components import UndoRedoComponent
+
+sys.modules['_APC.ControlElementUtils'] = ControlElementUtils
+sys.modules['_APC.SkinDefault'] = SkinDefault
+sys.modules['_APC.SessionComponent'] = SessionComponent
+
+
+# from _default. import Colors
+# from _default.BankToggleComponent import BankToggleComponent
+# from _default.MixerComponent import MixerComponent
+# from _default.QuantizationComponent import QuantizationComponent
+# from _default.TransportComponent import TransportComponent
+
+# from .StepSeqComponent import StepSeqComponent
+
 NUM_TRACKS = 8
 NUM_SCENES = 5
-
-from .APC40_MKIIx.CustomSessionComponent import CustomSessionComponent
 
 class APCJ40_MkII(APC, OptimizedControlSurface):
 
