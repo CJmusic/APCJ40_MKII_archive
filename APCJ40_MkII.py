@@ -27,6 +27,7 @@ from _APC.DeviceBankButtonElement import DeviceBankButtonElement
 from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 # from _APC.SessionComponent import SessionComponent
 from _APC.ControlElementUtils import make_button, make_encoder, make_slider, make_ring_encoder, make_pedal_button
+from _APC.ControlElementUtils import make_button as make_crossfade_button
 from _APC.SkinDefault import make_rgb_skin, make_default_skin, make_stop_button_skin, make_crossfade_button_skin
 from .APC_MKIIx import Colors
 from .APC_MKIIx.BankToggleComponent import BankToggleComponent
@@ -199,7 +200,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._crossfade_buttons = ButtonMatrixElement(rows=[
         #  [ make_button(channel, 66, name='%d_Crossfade_Button' % channel, skin=self._crossfade_button_skin) for channel in range(NUM_TRACKS)
         #  ]])
-        self._crossfade_buttons = ButtonMatrixElement(rows=[[ make_button(channel, 66, name=u'%d_Crossfade_Button' % channel, skin=self._crossfade_button_skin) for channel in range(NUM_TRACKS) ]])
+        self._crossfade_buttons = ButtonMatrixElement(rows=[[ make_crossfade_button(channel, 66, name=u'%d_Crossfade_Button' % channel, skin=self._crossfade_button_skin) for channel in range(NUM_TRACKS) ]]) ###changed to make_crossfade_button -CJ 2021-11-19
         self._select_buttons = ButtonMatrixElement(rows=[
          self._raw_select_buttons])
         self._master_select_button = make_on_off_button(channel=0, identifier=80, name='Master_Select_Button')
@@ -542,6 +543,10 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> step-seq-int
     def _select_note_mode(self):
         """
         Selects which note mode to use depending on the kind of
@@ -647,3 +652,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             control_surface=const(self),
 
             log_message=const(self.log_message))
+
+
+            
+    # def disconnect(self):
+    #     ControlSurface.disconnect(self)
+    #     return None
