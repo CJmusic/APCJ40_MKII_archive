@@ -14,7 +14,7 @@ Changes to come:
 
 Bugs with Step Sequencer: 
 
-- Pad buttons are always lit upon disconnect (the issue is the custom make_button in ControlElementUtils
+- Pad buttons are always lit upon disconnect (the issue is the custom make_button in ControlElementUtils)
 - Note repeat is always engaged (it's been disabled)
 - Nudge isn't working 
 
