@@ -45,16 +45,13 @@ from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
 
 from .APC_MKIIx.NoteRepeatComponent import NoteRepeatComponent
 from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
-# from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
 from .APC_MKIIx.GridResolution import GridResolution
 from .APC_MKIIx.PlayheadElement import PlayheadElement
 from .APC_MKIIx.MelodicComponent import MelodicComponent
-from .APC_MKIIx.ControlElementUtils import make_button, make_ring_encoder
+# from .APC_MKIIx.ControlElementUtils import make_button, make_ring_encoder
 from .APC_MKIIx.MatrixMaps import FEEDBACK_CHANNELS
-from .APC_MKIIx.CustomModesComponent import CustomReenterBehaviour
-from .APC_MKIIx.NoteSettings import NoteEditorSettingsComponent
-
-
+# from .APC_MKIIx.CustomModesComponent import CustomReenterBehaviourAPC
 from .APC_MKIIx import ControlElementUtils
 from .APC_MKIIx import SkinDefault
 from .APC_MKIIx import SessionComponent
@@ -68,14 +65,14 @@ from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
 from .APC_MKIIx.ButtonElement import ButtonElement
 from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
 
-# from ableton.v2.control_surface.components import UndoRedoComponent
+# # from ableton.v2.control_surface.components import UndoRedoComponent
 
 sys.modules['_APC.ControlElementUtils'] = ControlElementUtils
 sys.modules['_APC.SkinDefault'] = SkinDefault
 sys.modules['_APC.SessionComponent'] = SessionComponent
 
 
-# from _default. import Colors
+# from _default import Colors
 # from _default.BankToggleComponent import BankToggleComponent
 # from _default.MixerComponent import MixerComponent
 # from _default.QuantizationComponent import QuantizationComponent
