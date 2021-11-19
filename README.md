@@ -14,11 +14,9 @@ Changes to come:
 
 Bugs with Step Sequencer: 
 
-- Crossfade buttons are always lit 
-- Velocity slider doesn't work 
+- Pad buttons are always lit upon disconnect (the issue is the custom make_button in ControlElementUtils
 - Note repeat is always engaged (it's been disabled)
 - Nudge isn't working 
-- In NoteEditorComponent and APCNoteEditorComponent the tuple (x, y) isn't handled properly 
 
 Special Thanks to: 
 
