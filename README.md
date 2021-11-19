@@ -10,13 +10,17 @@ So far the only changes are:
 
 Changes to come: 
 
-- Step Sequencer 
+- User Mode is a Step Sequencer 
 
+You can download the Step Sequencer Edition in the step-sequencer Branch
+ 
 Bugs with Step Sequencer: 
 
 - Pad buttons are always lit upon disconnect (the issue is the custom make_button in ControlElementUtils)
+- Playhead isn't working
+- Starts on wrong grid size or wrong clip size 
+- Loop selectors select a loop, they should navigate and extend the clip in my opinion
 - Note repeat is always engaged (it's been disabled)
-- Nudge isn't working 
 
 Special Thanks to: 
 
