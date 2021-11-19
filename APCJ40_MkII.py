@@ -543,6 +543,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
 
+
     def _select_note_mode(self):
         """
         Selects which note mode to use depending on the kind of
@@ -651,6 +652,6 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
             
-    def disconnect(self):
-        ControlSurface.disconnect(self)
-        return None
+    # def disconnect(self):
+    #     ControlSurface.disconnect(self)
+    #     return None
