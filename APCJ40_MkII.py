@@ -59,7 +59,7 @@ from .APC_MKIIx.NoteSettings import NoteEditorSettingsComponent
 
 from .APC_MKIIx import ControlElementUtils
 from .APC_MKIIx import SkinDefault
-from .APC_MKIIx import SessionComponent
+# from .APC_MKIIx import SessionComponent
 
 
 from .APC_MKIIx.SessionComponent import SessionComponent
@@ -76,6 +76,8 @@ sys.modules['_APC.ControlElementUtils'] = ControlElementUtils
 sys.modules['_APC.SkinDefault'] = SkinDefault
 sys.modules['_APC.SessionComponent'] = SessionComponent
 
+from .APC_MKIIx.ActionsComponent import ActionsComponent
+
 
 # from _default. import Colors
 # from _default.BankToggleComponent import BankToggleComponent
@@ -84,6 +86,7 @@ sys.modules['_APC.SessionComponent'] = SessionComponent
 # from _default.TransportComponent import TransportComponent
 
 # from .StepSeqComponent import StepSeqComponent
+from _Framework.Control import ButtonControl
 
 NUM_TRACKS = 8
 NUM_SCENES = 5
@@ -99,25 +102,28 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._crossfade_button_skin = None
         self._double_press_context = DoublePressContext()
         self._shift_button = None
+        # self._undo_button = None
+        # self._redo_button = None
 
         self._implicit_arm = False # Set to True to auto arm the selected track
         with self.component_guard():
             self._create_controls() #controls seem to all be working
-            self._create_bank_toggle() 
+            self._create_bank_toggle()
             self._create_mixer() #the lights aren't working for the crossfader buttons
             self._create_transport() #the shift controls aren't working for nudge
             self._create_view_control()
             self._create_quantization_selection()
             self._create_recording()
 
-            self._skin = make_custom_skin() # is this working ? 
-            self._clip_creator = ClipCreator() 
+            self._skin = make_custom_skin() # is this working ?
+            self._clip_creator = ClipCreator()
 
-            self._init_background() 
+            self._init_background()
             self._init_instrument() #this isn't switching to cleanly
-            self._init_drum_component() 
+            self._init_drum_component()
             self._init_step_sequencer() #this isn't working at all
             # self._init_note_repeat() #this is always on the toggle isn't working
+
 
             self._create_session()
             self._session.set_mixer(self._mixer)
@@ -125,6 +131,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._init_matrix_modes()
             self._create_device()
 
+            self._create_undo_redo #isn't working
             self.set_feedback_channels(FEEDBACK_CHANNELS)
 
         self.set_highlighting_session_component(self._session)
@@ -259,10 +266,17 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
                                                                                  double_press_rows))
         self._playhead = PlayheadElement(self._c_instance.playhead)
 
+        self._undo_button = self._with_shift(self._device_control_buttons_raw[6])
+        self._undo_button.name = 'Undo_Button'
+        self._redo_button = self._with_shift(self._device_control_buttons_raw[7])
+        self._redo_button.name = 'Redo_Button'
+
+
+
     def _create_bank_toggle(self):
         self._bank_toggle = BankToggleComponent(is_enabled=False, layer=Layer(bank_toggle_button=self._bank_button))
 
-        
+
     def _create_session(self):
 
         def when_bank_on(button):
@@ -293,10 +307,30 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._session.set_delete_button(self._nudge_down_button)
         self._session.set_copy_button(self._nudge_up_button)
 
-    # def _create_undo_redo(self):
-    #     self._undo_redo = UndoRedoComponent(name=u'Undo_Redo', is_enabled=False, layer=Layer(undo_button=self._with_shift(self._clip_device_button), redo_button=self._with_shift(self._detail_view_button)))
-    #     self._undo_redo.set_enabled(True)
+    def _create_undo_redo(self):
+        # undo_button = ButtonControl(self._with_shift(self._clip_device_button))
+        # redo_button = ButtonControl(self._with_shift(self._detail_view_button), color='Misc.Shift', pressed_color='Misc.ShiftOn', disabled_color='DefaultButton.Disabled')
+        self._actions_component = ActionsComponent(
+            name='Global_Actions',
+            is_enabled=False, 
+            layer=Layer(
+                # undo_button=ButtonControl(self._with_shift(self._clip_device_button)),
+                # redo_button=ButtonControl(self._with_shift(self._detail_view_button)),
+                undo_button=self._undo_button,
+                redo_button=self._redo_button,
+            )
+        )
 
+
+    # @undo_button.pressed
+    # def undo_button(self, button):
+    #     if self.song().can_undo:
+    #         self.song().undo()
+
+    # @redo_button.pressed
+    # def redo_button(self, button):
+    #     if self.song().can_redo:
+    #         self.song().redo()
 
     def _create_mixer(self):
         self._mixer = MixerComponent(NUM_TRACKS, auto_name=True, is_enabled=False, invert_mute_feedback=True, layer=Layer(volume_controls=self._volume_controls, arm_buttons=self._arm_buttons, solo_buttons=self._solo_buttons, mute_buttons=self._mute_buttons, shift_button=self._shift_button, track_select_buttons=self._select_buttons, prehear_volume_control=self._prehear_control, crossfader_control=self._crossfader_control, crossfade_buttons=self._crossfade_buttons))
@@ -483,11 +517,11 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._matrix_modes.add_mode('sends', self._session_mode_layers())
 
         self._matrix_modes.add_mode('user', self._user_mode_layers())
-        # self._matrix_modes.add_mode('user2', self._user2_mode_layers()) 
+        # self._matrix_modes.add_mode('user2', self._user2_mode_layers())
 
         self._matrix_modes.add_mode('session', self._session_mode_layers())
 
-    
+
 
         # self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, user2_button=self._metronome_button)
         self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button)
@@ -540,7 +574,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
                                                            disabled_value='DefaultButton.On')
         self._note_repeat_enabler.set_enabled(False)
         self._note_repeat_enabler.layer = Layer(toggle_button=self._with_shift(self._bank_button))
-        
+
 
 
 
@@ -632,7 +666,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         return NoteEditorSettingsComponent(self._grid_resolution,
                                            Layer(initial_encoders=self._mixer_encoders),
                                            Layer(encoders=self._mixer_encoders))
-   
+
 
 
     @contextmanager
@@ -652,7 +686,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             log_message=const(self.log_message))
 
 
-            
+
     # def disconnect(self):
     #     ControlSurface.disconnect(self)
     #     return None
