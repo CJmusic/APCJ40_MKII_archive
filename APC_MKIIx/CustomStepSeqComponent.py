@@ -217,11 +217,11 @@ class StepSeqComponent(CompoundComponent):
         return self._grid_resolution.clip_grid[1]
 
     def _update_playhead_color(self):
-        if self.is_enabled() and self._skin and self._playhead:
-            pass
+        if self.is_enabled() and self._skin and self._playhead: 
+            # pass
         #    self._playhead.velocity = to_midi_value(self._skin[self._playhead_color])  # switched 10/17
 
-        #    self._playhead.velocity = int(self._skin[self._playhead_color])
+           self._playhead.velocity = int(self._skin[self._playhead_color])
 
     def set_drum_group_device(self, drum_group_device):
         if not (not drum_group_device or drum_group_device.can_have_drum_pads):

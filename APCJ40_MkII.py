@@ -100,6 +100,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._double_press_context = DoublePressContext()
         self._shift_button = None
 
+        self._implicit_arm = False # Set to True to auto arm the selected track
         with self.component_guard():
             self._create_controls() #controls seem to all be working
             self._create_bank_toggle() 
@@ -473,8 +474,8 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         """ Switch between Session and StepSequencer modes """
 
         """here we go trying to switch.... lew  05:53   21/10/17"""
-
-        self._auto_arm = AutoArmComponent(name='Auto_Arm')
+        if self._implicit_arm:
+            self._auto_arm = AutoArmComponent(name='Auto_Arm')
 
         self._matrix_modes = ModesComponent(name='Matrix_Modes', is_root=True)
         self._matrix_modes.default_behaviour = ImmediateBehaviour()
@@ -543,10 +544,6 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> step-seq-int
     def _select_note_mode(self):
         """
         Selects which note mode to use depending on the kind of
@@ -608,7 +605,8 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self.schedule_message(1, self.disablebackground)
 
         if self._matrix_modes.selected_mode != 'disabled':
-            self._update_auto_arm(selected_mode=mode)
+            if self._implicit_arm:
+                self._update_auto_arm(selected_mode=mode)
             self.reset_controlled_track()
 
     def _update_auto_arm(self, selected_mode=None):

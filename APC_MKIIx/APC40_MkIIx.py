@@ -619,6 +619,7 @@ class APC40_MkIIx(APC, OptimizedControlSurface):
 
     def _update_auto_arm(self, selected_mode=None):
         self._auto_arm.set_enabled(selected_mode or self._matrix_modes.selected_mode == 'user')
+        # pass
 
     @subject_slot('selected_mode')
     def _on_note_editor_layout_changed(self, mode):
