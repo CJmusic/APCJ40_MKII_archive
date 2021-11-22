@@ -29,46 +29,48 @@ from _APC.DetailViewCntrlComponent import DetailViewCntrlComponent
 from _APC.ControlElementUtils import make_button, make_encoder, make_slider, make_ring_encoder, make_pedal_button
 from _APC.ControlElementUtils import make_button as make_crossfade_button
 from _APC.SkinDefault import make_rgb_skin, make_default_skin, make_stop_button_skin, make_crossfade_button_skin
-from .APC_MKIIx import Colors
-from .APC_MKIIx.BankToggleComponent import BankToggleComponent
-from .APC_MKIIx.MixerComponent import MixerComponent
-from .APC_MKIIx.QuantizationComponent import QuantizationComponent
-from .APC_MKIIx.TransportComponent import TransportComponent
+from .resources import Colors
+from .resources.BankToggleComponent import BankToggleComponent
+from .resources.MixerComponent import MixerComponent
+from .resources.QuantizationComponent import QuantizationComponent
+from .resources.TransportComponent import TransportComponent
 
 
-from .APC_MKIIx import Colors, consts
-from .APC_MKIIx.BankToggleComponent import BankToggleComponent
-from .APC_MKIIx.MixerComponent import MixerComponent
-from .APC_MKIIx.QuantizationComponent import QuantizationComponent
-from .APC_MKIIx.TransportComponent import TransportComponent
-from .APC_MKIIx.CustomSessionComponent import CustomSessionComponent
-from .APC_MKIIx.SkinDefault import make_default_skin as make_custom_skin
-from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
+from .resources import Colors, consts
+from .resources.BankToggleComponent import BankToggleComponent
+from .resources.MixerComponent import MixerComponent
+from .resources.QuantizationComponent import QuantizationComponent
+from .resources.TransportComponent import TransportComponent
+from .resources.CustomSessionComponent import CustomSessionComponent
+from .resources.SkinDefault import make_default_skin as make_custom_skin
+from .resources.ButtonSliderElement import ButtonSliderElement
 
-from .APC_MKIIx.NoteRepeatComponent import NoteRepeatComponent
-from .APC_MKIIx.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
-# from .APC_MKIIx.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
-from .APC_MKIIx.GridResolution import GridResolution
-from .APC_MKIIx.PlayheadElement import PlayheadElement
-from .APC_MKIIx.MelodicComponent import MelodicComponent
-from .APC_MKIIx.ControlElementUtils import make_button, make_ring_encoder
-from .APC_MKIIx.MatrixMaps import FEEDBACK_CHANNELS
-from .APC_MKIIx.CustomModesComponent import CustomReenterBehaviour
-from .APC_MKIIx.NoteSettings import NoteEditorSettingsComponent
-
-
-from .APC_MKIIx import ControlElementUtils
-from .APC_MKIIx import SkinDefault
-# from .APC_MKIIx import SessionComponent
+from .resources.NoteRepeatComponent import NoteRepeatComponent
+from .resources.StepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+# from .resources.CustomStepSeqComponent import StepSeqComponent, DrumGroupFinderComponent
+from .resources.GridResolution import GridResolution
+from .resources.PlayheadElement import PlayheadElement
+from .resources.MelodicComponent import MelodicComponent
+from .resources.ControlElementUtils import make_button, make_ring_encoder
+from .resources.MatrixMaps import FEEDBACK_CHANNELS
+from .resources.CustomModesComponent import CustomReenterBehaviour
+from .resources.NoteSettings import NoteEditorSettingsComponent
 
 
-from .APC_MKIIx.SessionComponent import SessionComponent
+from .resources import ControlElementUtils
+from .resources import SkinDefault
+# from .resources import SessionComponent
 
-from .APC_MKIIx.ButtonSliderElement import ButtonSliderElement
-from .APC_MKIIx.AutoArmComponent import AutoArmComponent
-from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
-from .APC_MKIIx.ButtonElement import ButtonElement
-from .APC_MKIIx.DrumGroupComponent import DrumGroupComponent
+
+from .resources.SessionComponent import SessionComponent
+
+from .resources.ButtonSliderElement import ButtonSliderElement
+from .resources.AutoArmComponent import AutoArmComponent
+from .resources.DrumGroupComponent import DrumGroupComponent
+from .resources.ButtonElement import ButtonElement
+from .resources.DrumGroupComponent import DrumGroupComponent
+
+from .resources.VUMeters import VUMeters
 
 # from ableton.v2.control_surface.components import UndoRedoComponent
 
@@ -76,7 +78,7 @@ sys.modules['_APC.ControlElementUtils'] = ControlElementUtils
 sys.modules['_APC.SkinDefault'] = SkinDefault
 sys.modules['_APC.SessionComponent'] = SessionComponent
 
-from .APC_MKIIx.ActionsComponent import ActionsComponent
+from .resources.ActionsComponent import ActionsComponent
 
 
 # from _default. import Colors
@@ -123,7 +125,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._init_drum_component()
             self._init_step_sequencer() #this isn't working at all
             # self._init_note_repeat() #this is always on the toggle isn't working
-
+            # self._init_VUMeters()
 
             self._create_session()
             self._session.set_mixer(self._mixer)
@@ -477,6 +479,41 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             note_editor_matrices=ButtonMatrixElement([[ self._session_matrix.submatrix[:8, 4 - row] for row in range(4)]]))
 
 
+    def _init_VUMeters(self):
+        self._vu = VUMeters(name = 'VUMeters', is_enabled = False)
+        # Layer 
+        # self._vu.Layer()
+        # VU_button = self._with_shift(self._bank_button)
+
+        # self._note_repeat = NoteRepeatComponent(is_enabled=False,name='Note_Repeat')
+        # self._note_repeat.set_enabled(False)
+        # self._note_repeat.set_note_repeat(self._c_instance.note_repeat)
+        # self._note_repeat.layer = Layer(
+        #     # aftertouch_control=self._aftertouch_control,
+        #     select_buttons=self._shifted_stop_buttons
+        #     # pad_parameters=self._pad_parameter_control
+        # )
+        # self._note_repeat.layer.priority = consts.DIALOG_PRIORITY
+        # self._note_repeat_enabler = EnablingModesComponent(name='Note_Repeat_Enabler', component=self._note_repeat,
+        #                                                    toggle_value='DefaultButton.Alert',
+        #                                                    disabled_value='DefaultButton.On')
+        # self._note_repeat_enabler.set_enabled(False)
+        # self._note_repeat_enabler.layer = Layer(toggle_button=self._with_shift(self._bank_button))
+
+
+    def enter_VUMeter_mode(self):
+        self._matrix_modes.selected_mode = 'VU'
+        self._update_vu_meters()
+        self.reset_controlled_track()
+        
+    def _update_vu_meters(self):
+        if self._vu == None:
+            self._vu = VUMeters(self._parent)
+        else:
+            self._vu.disconnect()
+        self._vu.observe( int(self._session_zoom._session.track_offset()) )
+
+
     def enter_note_mode_layout(self):
         self._matrix_modes.selected_mode = 'user'
         self._select_note_mode()
@@ -520,11 +557,12 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._matrix_modes.add_mode('user2', self._user2_mode_layers())
 
         self._matrix_modes.add_mode('session', self._session_mode_layers())
+        self._matrix_modes.add_mode('VU', self._session_mode_layers())
 
 
 
         # self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, user2_button=self._metronome_button)
-        self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button)
+        self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, VU_button = self._with_shift(self._bank_button))
 
         self._on_matrix_mode_changed.subject = self._matrix_modes
         self._matrix_modes.selected_mode = 'session'
