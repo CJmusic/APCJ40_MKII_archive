@@ -1,26 +1,35 @@
 # APCJ40_MKII
+by chris joseph
 
 A custom remote script for the APC40 MKII for Ableton Live 11. 
 
-So far the only changes are: 
+Changes:
 
-- nudge + copies a clip 
-- nudge - deletes a clip 
+- nudge + + copies a clip 
+- nudge + - deletes a clip 
 - shift + nudge now nudges 
 
-Changes to come: 
+Planned Changes: 
 
-- User Mode is a Step Sequencer 
+- shift + bank turns on VU meters 
+- user mode is a step sequencer
+- shift + clip view is undo 
+- shift + detail view is redo 
+- shift + record is capture midi
+
 
 You can download the Step Sequencer Edition in the step-sequencer Branch
  
 Bugs with Step Sequencer: 
 
-- Pad buttons are always lit upon disconnect (the issue is the custom make_button in ControlElementUtils)
-- Playhead isn't working
-- Starts on wrong grid size or wrong clip size 
-- Loop selectors select a loop, they should navigate and extend the clip in my opinion
+- Velocity slider doesn't work (it doesn't play the note at that velocity, but it sequences it at it) 
+- Pads are always lit upon disconnect, velocity slider pads always lit (issue is with the make_button command ControlElementUtils.py)
 - Note repeat is always engaged (it's been disabled)
+- Nudge isn't working 
+- Undo and Redo isn't working
+- The loop selector isn't working 
+- the Playhead isn't showing up
+- In NoteEditorComponent and APCNoteEditorComponent the tuple (x, y) isn't handled properly 
 
 Special Thanks to: 
 
@@ -32,4 +41,8 @@ cylab: https://github.com/cylab/APCequencer
 
 martinpechmann: https://github.com/martinpechmann/APC400000
 
+hanzpetrov: http://remotescripts.blogspot.com/p/apc-64-40.html
 
+fabriziopoce: https://github.com/matthewcieplak/APC_64_40_9l  
+
+willmarshall: https://github.com/willrjmarshall/AbletonDJTemplateUnsupported

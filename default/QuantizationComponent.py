@@ -1,10 +1,12 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/Live/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkII/QuantizationComponent.py
+# Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkIIxCJ/QuantizationComponent.py
+# Compiled at: 2018-04-23 20:27:04
 from __future__ import absolute_import, print_function, unicode_literals
 import Live
 from _Framework.Control import RadioButtonControl, control_list
 from _Framework.ControlSurfaceComponent import ControlSurfaceComponent
 from _Framework.SubjectSlot import subject_slot
-AVAILABLE_QUANTIZATION = [Live.Song.Quantization.q_no_q,
+AVAILABLE_QUANTIZATION = [
+ Live.Song.Quantization.q_no_q,
  Live.Song.Quantization.q_8_bars,
  Live.Song.Quantization.q_4_bars,
  Live.Song.Quantization.q_2_bars,
@@ -29,7 +31,7 @@ class QuantizationComponent(ControlSurfaceComponent):
             if quantization != self.song().clip_trigger_quantization:
                 self.song().clip_trigger_quantization = quantization
 
-    @subject_slot(u'clip_trigger_quantization')
+    @subject_slot('clip_trigger_quantization')
     def _on_clip_trigger_quantization_changed(self):
         self._get_button(self.song().clip_trigger_quantization).is_checked = True
 

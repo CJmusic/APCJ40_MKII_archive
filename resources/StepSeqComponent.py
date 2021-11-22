@@ -71,16 +71,40 @@ class StepSeqComponent(StepSeqComponent, APCMessenger):
         self._note_editor.set_velocity_slider(button_slider)
 
     def _configure_playhead(self):
+        # self._playhead_component._notes = tuple(chain(*starmap(range, (
+        #     (28, 32),
+        #     (20, 24),
+        #     (12, 16),
+        #     (4, 8))))) 
+        # self._playhead_component._triplet_notes = tuple(chain(*starmap(range, (
+        #     (28, 31),
+        #     (20, 23),
+        #     (12, 15),
+        #     (4, 7)))))
         self._playhead_component._notes = tuple(chain(*starmap(range, (
-            (28, 32),
-            (20, 24),
-            (12, 16),
-            (4, 8))))) 
+            (92, 100),
+            (84, 92),
+            (76, 84),
+            (68, 76))))) 
         self._playhead_component._triplet_notes = tuple(chain(*starmap(range, (
-            (28, 31),
-            (20, 23),
-            (12, 15),
-            (4, 7)))))
+            (92, 98),
+            (84, 90),
+            (76, 82),
+            (68, 74)))))
+            # notes=chain(*starmap(
+            #     range, (
+            #         (92, 100),
+            #         (84, 92),
+            #         (76, 84),
+            #         (68, 76)
+            #     ))),
+            # triplet_notes=chain(*starmap(
+            #     range, (
+            #         (92, 98),
+            #         (84, 90),
+            #         (76, 82),
+            #         (68, 74)
+            #     ))), feedback_channels=[PLAYHEAD_FEEDBACK_CHANNELS]))
 
     def _setup_drum_group_finder(self):
         self._drum_group_finder = DrumGroupFinderComponent()

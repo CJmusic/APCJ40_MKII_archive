@@ -1,8 +1,7 @@
-#Embedded file name: /Users/versonator/Jenkins/live/output/Live/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkII/MixerComponent.py
+# Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/APC40_MkIIxCJ/MixerComponent.py
+# Compiled at: 2018-04-23 20:27:04
 from __future__ import absolute_import, print_function, unicode_literals
-from builtins import chr
-from builtins import filter
-from future.moves.itertools import zip_longest
+from itertools import zip_longest
 from _Framework.Control import RadioButtonControl, control_list
 from _Framework.Dependency import depends
 from _Framework.Util import nop
@@ -15,30 +14,36 @@ class ChannelStripComponent(ChannelStripComponentBase):
             state = self._track.mixer_device.crossfade_assign if self._track else 1
             value_to_send = None
             if state == 0:
-                value_to_send = u'Mixer.Crossfade.A'
-            elif state == 1:
-                value_to_send = u'Mixer.Crossfade.Off'
-            elif state == 2:
-                value_to_send = u'Mixer.Crossfade.B'
+                value_to_send = 'Mixer.Crossfade.A'
+            else:
+                if state == 1:
+                    value_to_send = 'Mixer.Crossfade.Off'
+                else:
+                    if state == 2:
+                        value_to_send = 'Mixer.Crossfade.B'
             self._crossfade_toggle.set_light(value_to_send)
+        return
 
 
 def _set_channel(controls, channel):
     for control in filter(None, controls or []):
         control.set_channel(channel)
 
+    return
+
 
 class MixerComponent(MixerComponentBase):
     send_select_buttons = control_list(RadioButtonControl)
 
     @depends(show_message=nop)
-    def __init__(self, num_tracks = 0, show_message = nop, *a, **k):
+    def __init__(self, num_tracks=0, show_message=nop, *a, **k):
         super(MixerComponent, self).__init__(num_tracks=num_tracks, *a, **k)
         self._show_message = show_message
         self.on_num_sends_changed()
         self._pan_controls = None
         self._send_controls = None
         self._user_controls = None
+        return
 
     def _create_strip(self):
         return ChannelStripComponent()
@@ -53,22 +58,25 @@ class MixerComponent(MixerComponentBase):
     def on_send_index_changed(self):
         if self.send_index is None:
             self.send_select_buttons.control_count = 0
-        elif self.send_index < self.send_select_buttons.control_count:
-            self.send_select_buttons[self.send_index].is_checked = True
+        else:
+            if self.send_index < self.send_select_buttons.control_count:
+                self.send_select_buttons[self.send_index].is_checked = True
         if self.is_enabled() and self._send_controls:
             self._show_controlled_sends_message()
+        return
 
     def _show_controlled_sends_message(self):
         if self._send_index is not None:
-            send_name = chr(ord(u'A') + self._send_index)
-            self._show_message(u'Controlling Send %s' % send_name)
+            send_name = chr(ord('A') + self._send_index)
+            self._show_message('Controlling Send %s' % send_name)
+        return
 
     def set_pan_controls(self, controls):
         super(MixerComponent, self).set_pan_controls(controls)
         self._pan_controls = controls
         self._update_pan_controls()
         if self.is_enabled() and controls:
-            self._show_message(u'Controlling Pans')
+            self._show_message('Controlling Pans')
 
     def set_send_controls(self, controls):
         super(MixerComponent, self).set_send_controls(controls)
@@ -81,7 +89,7 @@ class MixerComponent(MixerComponentBase):
         self._user_controls = controls
         self._update_user_controls()
         if self.is_enabled() and controls:
-            self._show_message(u'Controlling User Mappings')
+            self._show_message('Controlling User Mappings')
 
     def set_crossfade_buttons(self, buttons):
         for strip, button in zip_longest(self._channel_strips, buttons or []):
