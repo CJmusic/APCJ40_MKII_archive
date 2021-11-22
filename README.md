@@ -16,6 +16,7 @@ Planned Changes:
 - shift + clip view is undo 
 - shift + detail view is redo 
 - shift + record is capture midi
+- press and hold select clip to expand or collapse a group
 
 
 You can download the Step Sequencer Edition in the step-sequencer Branch
