@@ -125,7 +125,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._init_drum_component()
             self._init_step_sequencer() #this isn't working at all
             # self._init_note_repeat() #this is always on the toggle isn't working
-            # self._init_VUMeters()
+            # self._init_vu_meters()
 
             self._create_session()
             self._session.set_mixer(self._mixer)
@@ -479,8 +479,12 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             note_editor_matrices=ButtonMatrixElement([[ self._session_matrix.submatrix[:8, 4 - row] for row in range(4)]]))
 
 
-    def _init_VUMeters(self):
-        self._vu = VUMeters(name = 'VUMeters', is_enabled = False)
+    def _enter_vu_meters(self):
+        self._matrix_modes.selected_mode = 'VU'
+        self._update_vu_meters()
+        self.reset_controlled_track()
+
+    #     self._vu = VUMeters()
         # Layer 
         # self._vu.Layer()
         # VU_button = self._with_shift(self._bank_button)
@@ -500,14 +504,42 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._note_repeat_enabler.set_enabled(False)
         # self._note_repeat_enabler.layer = Layer(toggle_button=self._with_shift(self._bank_button))
 
+    def _select_vu_mode(self):
+        """
+        Selects which note mode to use depending on the kind of
+        current selected track and its device chain...
+        """
+        # self._set_note_mode(PATTERN_6, CHANNEL_6, NOTEMAP_6, True, False)
+        # VU Meters
+        self._session.set_enabled(False)
+        self._session_zoom._on_zoom_value(1) #zoom out
+        self._session_zoom.set_enabled(True)
+        self._session_zoom._is_zoomed_out = False
+        self._session_zoom.set_zoom_button(self._parent._shift_button)
+        self._session_zoom.update()
 
-    def enter_VUMeter_mode(self):
-        self._matrix_modes.selected_mode = 'VU'
+        self._user_mode.selected_mode = 'VU'
         self._update_vu_meters()
+
+        # track = self.song().view.selected_track
+        # drum_device = self._drum_group_finder.drum_group
+        # self._step_sequencer.set_drum_group_device(drum_device)
+        # self._drum_component.set_drum_group_device(drum_device)
+        # if track == None or track.is_foldable or track in self.song().return_tracks or track == self.song().master_track or track.is_frozen:
+        #     self._user_modes.selected_mode = 'disabled'
+        # elif track and track.has_audio_input:
+        #     self._user_modes.selected_mode = 'disabled'
+        #     #self._note_modes.selected_mode = 'looper'
+        # elif drum_device:
+        #     self._user_modes.selected_mode = 'drums'
+        #else:
+        #    self._user_modes.selected_mode = 'instrument'
         self.reset_controlled_track()
+
+
         
     def _update_vu_meters(self):
-        if self._vu == None:
+        if self._vu == None & self._user_modes.selected_mode == 'VU':
             self._vu = VUMeters(self._parent)
         else:
             self._vu.disconnect()
@@ -563,6 +595,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
         # self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, user2_button=self._metronome_button)
         self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, VU_button = self._with_shift(self._bank_button))
+        # self._matrix_modes.layer = Layer(session_button=self._pan_button, sends_button=self._sends_button, user_button=self._user_button, VU_button = self._bank_button)
 
         self._on_matrix_mode_changed.subject = self._matrix_modes
         self._matrix_modes.selected_mode = 'session'
