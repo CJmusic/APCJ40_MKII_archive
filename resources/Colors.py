@@ -61,7 +61,8 @@ class FallbackColor(Color):
 
     def __init__(self, default_color = None, *a, **k):
         super(FallbackColor, self).__init__(*a, **k)
-        self.default_color = default_color
+        # self.default_color = default_color
+        self.default_color = Rgb.BLACK
 
     def draw(self, interface):
         try:

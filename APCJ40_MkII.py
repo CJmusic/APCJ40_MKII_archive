@@ -134,12 +134,12 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._create_session()
             self._session.set_mixer(self._mixer)
 
+            self._init_vu_meters()
             self._init_matrix_modes()
             self._create_device()
 
             self._create_undo_redo #isn't working
             self.set_feedback_channels(FEEDBACK_CHANNELS)
-            self._init_vu_meters()
 
         self.set_highlighting_session_component(self._session)
         self.set_device_component(self._device)
@@ -166,7 +166,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         make_on_off_button = partial(make_button, skin=self._default_skin)
 
         def make_color_button(*a, **k):
-            button = make_button(skin=self._color_skin, *a, **k)
+            button = make_button(skin=self._color_skin, *a, **k) # this line is causing Pads to glow CJ 2021-11-23
             # button = make_crossfade_button(skin=self._color_skin, *a, **k)
             button.is_rgb = True
             button.num_delayed_messages = 2
@@ -504,40 +504,43 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
 
     def _init_vu_meters(self): 
-    
-        _scene_launch_buttons = [ ButtonElement(True, MIDI_NOTE_TYPE, 0, index + 82) for index in range(5) ]
-        for index in range(len(self._scene_launch_buttons)):
-            _scene_launch_buttons[index].name = 'Scene_' + str(index) + '_Launch_Button'        
+        # _matrix = ButtonMatrixElement()
+        # _matrix.name = 'Button_Matrix'
+
+        # _scene_launch_buttons = [ ButtonElement(True, MIDI_NOTE_TYPE, 0, index + 82) for index in range(5) ]
+        # for index in range(len(self._scene_launch_buttons)):
+        #     _scene_launch_buttons[index].name = 'Scene_' + str(index) + '_Launch_Button'        
         
-        _button_rows = []
-        for scene_index in range(5):
-            scene = self._session.scene(scene_index)
-            scene.name = 'Scene_' + str(scene_index)
-            button_row = []
-            # scene.set_launch_button(self._scene_launch_buttons[scene_index])
-            scene._launch_button = _scene_launch_buttons[scene_index]
-            scene.set_triggered_value(2)
-            for track_index in range(8):
-                button = ConfigurableButtonElement(True, MIDI_NOTE_TYPE, track_index, (scene_index + 53))
-                button.name = str(track_index) + '_Clip_' + str(scene_index) + '_Button'
-                button_row.append(button)
+        # _button_rows = []
+        # for scene_index in range(5):
+        #     scene = self._session.scene(scene_index)
+        #     scene.name = 'Scene_' + str(scene_index)
+        #     button_row = []
+        #     scene.set_launch_button(_scene_launch_buttons[scene_index])
+        #     # scene._launch_button = _scene_launch_buttons[scene_index]
+        #     scene.set_triggered_value(2)
+        #     for track_index in range(8):
+        #         button = ConfigurableButtonElement(True, MIDI_NOTE_TYPE, track_index, (scene_index + 53))
+        #         button.name = str(track_index) + '_Clip_' + str(scene_index) + '_Button'
+        #         button_row.append(button)
 
-                clip_slot = scene.clip_slot(track_index)
-                clip_slot.name = str(track_index) + '_Clip_Slot_' + str(scene_index)
-                clip_slot.set_triggered_to_play_value(2)
-                clip_slot.set_triggered_to_record_value(4)
-                clip_slot.set_stopped_value(5)
-                clip_slot.set_started_value(1)
-                clip_slot.set_recording_value(3)
-                clip_slot.set_launch_button(button)
-            # _matrix.add_row(tuple(button_row))
-            _button_rows.append(button_row)
+        #         clip_slot = scene.clip_slot(track_index)
+        #         clip_slot.name = str(track_index) + '_Clip_Slot_' + str(scene_index)
+        #         clip_slot.set_triggered_to_play_value(2)
+        #         clip_slot.set_triggered_to_record_value(4)
+        #         clip_slot.set_stopped_value(5)
+        #         clip_slot.set_started_value(1)
+        #         clip_slot.set_recording_value(3)
+        #         clip_slot.set_launch_button(button)
+        #     _matrix.add_row(tuple(button_row))
+        #     _button_rows.append(button_row)
 
-        track_stop_buttons = [ ConfigurableButtonElement(True, MIDI_NOTE_TYPE, index, 52) for index in range(8) ]
+        # track_stop_buttons = [ ConfigurableButtonElement(True, MIDI_NOTE_TYPE, index, 52) for index in range(8) ]
 
-        self._button_rows = _button_rows
-        self._track_stop_buttons = track_stop_buttons
-        self._scene_launch_buttons = _scene_launch_buttons
+        self._button_rows = self._matrix_rows_raw
+        self._track_stop_buttons = self._stop_buttons 
+        self._scene_launch_buttons = self._scene_launch_buttons
+        self._matrix = self._double_press_matrix
         parent = self
         # self._parent = Layer(name = 'VU_modes', _button_rows= _button_rows)
         # self._parent = Layer()
@@ -588,6 +591,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         self._vu.observe( int(self._session_zoom._session.track_offset()) )
 
     def _vu_mode_layers(self):
+        # self._vu_modes = ModesComponent(name='VU_Modes', is_enabled=False)
+    
+        # self._vu_modes.add_mode('VU', self._vu_mode_layers())
         return [self._vu, self._view_control, self._session_zoom]#, self._mixer
 
 
@@ -648,9 +654,6 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
     def _session_mode_layers(self):
         return [self._session, self._view_control, self._session_zoom]#, self._mixer
-
-
-
 
     def _user_mode_layers(self):
         self._drum_group_finder = DrumGroupFinderComponent()
