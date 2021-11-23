@@ -4,6 +4,7 @@ from _Framework.ButtonElement import ButtonElement
 from _Framework.SessionComponent import SessionComponent 
 import math
 
+# from Colors import Rgb
 
 # Constants. Tweaking these would let us work with different grid sizes or different templates
 
@@ -14,10 +15,10 @@ CLIP_GRID_X = 8
 CLIP_GRID_Y = 5
 
 # Velocity values for clip colours. Different on some devices
-LED_RED = 3
-LED_ON = 127
+LED_RED = 5
+LED_ON = 21
 LED_OFF = 0
-LED_ORANGE = 5
+LED_ORANGE = 13
 
 # Scaling constants. Narrows the db range we display to 0db-21db or thereabouts
 CHANNEL_SCALE_MAX = 0.92
