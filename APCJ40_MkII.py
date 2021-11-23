@@ -20,6 +20,7 @@ from _Framework.BackgroundComponent import BackgroundComponent, ModifierBackgrou
 from _Framework.SubjectSlot import subject_slot
 from _Framework.Dependency import inject
 
+from _Framework.InputControlElement import MIDI_NOTE_TYPE, MIDI_CC_TYPE
 
 from _APC.APC import APC
 from _APC.DeviceComponent import DeviceComponent
@@ -79,6 +80,7 @@ sys.modules['_APC.SkinDefault'] = SkinDefault
 sys.modules['_APC.SessionComponent'] = SessionComponent
 
 from .resources.ActionsComponent import ActionsComponent
+from .resources.ConfigurableButtonElement import ConfigurableButtonElement
 
 
 # from _default. import Colors
@@ -107,7 +109,10 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._undo_button = None
         # self._redo_button = None
 
-        self._implicit_arm = False # Set to True to auto arm the selected track
+        self._implicit_arm = True # Set to True to auto arm the selected track
+
+        self._vu = None
+
         with self.component_guard():
             self._create_controls() #controls seem to all be working
             self._create_bank_toggle()
@@ -125,8 +130,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             self._init_drum_component()
             self._init_step_sequencer() #this isn't working at all
             # self._init_note_repeat() #this is always on the toggle isn't working
-            # self._init_vu_meters()
-
+ 
             self._create_session()
             self._session.set_mixer(self._mixer)
 
@@ -135,9 +139,25 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
             self._create_undo_redo #isn't working
             self.set_feedback_channels(FEEDBACK_CHANNELS)
+            self._init_vu_meters()
 
         self.set_highlighting_session_component(self._session)
         self.set_device_component(self._device)
+
+
+
+    def disconnect(self):
+        # for button in self._modes_buttons:
+        #     button.remove_value_listener(self._mode_value)
+        self._controls = None
+        self._session = None
+        self._session_zoom = None
+        self._matrix = None
+        self._track_stop_buttons = None
+        self._stop_button_matrix = None
+        self._shift_button.remove_value_listener(self._shift_value)
+        # ModeSelectorComponent.disconnect(self)
+
 
     def _with_shift(self, button):
         return ComboElement(button, modifiers=[self._shift_button])
@@ -163,6 +183,9 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             return butt
 
         self._shift_button = make_button(0, 98, name='Shift_Button', resource_type=PrioritizedResource)
+
+
+
         self._bank_button = make_on_off_button(0, 103, name='Bank_Button')
         self._left_button = make_button(0, 97, name='Bank_Select_Left_Button')
         self._right_button = make_button(0, 96, name='Bank_Select_Right_Button')
@@ -479,71 +502,72 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
             note_editor_matrices=ButtonMatrixElement([[ self._session_matrix.submatrix[:8, 4 - row] for row in range(4)]]))
 
 
+    def _init_vu_meters(self): 
+        _button_rows = []
+        for scene_index in range(5):
+            button_row = []
+            for track_index in range(8):
+                button = ConfigurableButtonElement(True, MIDI_NOTE_TYPE, track_index, (scene_index + 53))
+                button.name = str(track_index) + '_Clip_' + str(scene_index) + '_Button'
+                button_row.append(button)
+            _button_rows.append(button_row)
+
+        track_stop_buttons = [ ConfigurableButtonElement(True, MIDI_NOTE_TYPE, index, 52) for index in range(8) ]
+
+        self._button_rows = _button_rows
+        self._track_stop_buttons = track_stop_buttons
+        parent = self
+        # self._parent = Layer(name = 'VU_modes', _button_rows= _button_rows)
+        # self._parent = Layer()
+        self._vu = VUMeters(parent)
+        self._shift_button.add_value_listener(self._shift_value)
+        # self._create_vu_layer(self)
+        # self._button_rows = 
+        # self._matrix_rows_raw
+        # self._track_stop_buttons = self._stop_buttons_raw
+        # self._parent = self
+
+
+
+    def _shift_value(self, value):
+            if (self._matrix_modes == 'VU' and self._vu != None):
+                if value != 0:
+                    self._vu.disconnect()
+                    self._vu.disable()
+                else:
+                    self._update_vu_meters()
+                    self._vu.enable()
+
     def _enter_vu_meters(self):
         self._matrix_modes.selected_mode = 'VU'
-        self._update_vu_meters()
-        self.reset_controlled_track()
-
-    #     self._vu = VUMeters()
-        # Layer 
-        # self._vu.Layer()
-        # VU_button = self._with_shift(self._bank_button)
-
-        # self._note_repeat = NoteRepeatComponent(is_enabled=False,name='Note_Repeat')
-        # self._note_repeat.set_enabled(False)
-        # self._note_repeat.set_note_repeat(self._c_instance.note_repeat)
-        # self._note_repeat.layer = Layer(
-        #     # aftertouch_control=self._aftertouch_control,
-        #     select_buttons=self._shifted_stop_buttons
-        #     # pad_parameters=self._pad_parameter_control
-        # )
-        # self._note_repeat.layer.priority = consts.DIALOG_PRIORITY
-        # self._note_repeat_enabler = EnablingModesComponent(name='Note_Repeat_Enabler', component=self._note_repeat,
-        #                                                    toggle_value='DefaultButton.Alert',
-        #                                                    disabled_value='DefaultButton.On')
-        # self._note_repeat_enabler.set_enabled(False)
-        # self._note_repeat_enabler.layer = Layer(toggle_button=self._with_shift(self._bank_button))
-
-    def _select_vu_mode(self):
-        """
-        Selects which note mode to use depending on the kind of
-        current selected track and its device chain...
-        """
-        # self._set_note_mode(PATTERN_6, CHANNEL_6, NOTEMAP_6, True, False)
-        # VU Meters
+        
+        # self._user_mode.selected_mode = 'VU'
         self._session.set_enabled(False)
         self._session_zoom._on_zoom_value(1) #zoom out
         self._session_zoom.set_enabled(True)
         self._session_zoom._is_zoomed_out = False
-        self._session_zoom.set_zoom_button(self._parent._shift_button)
-        self._session_zoom.update()
+        self._session_zoom.set_zoom_button(self._shift_button)
+        self._session_zoom.update() 
 
-        self._user_mode.selected_mode = 'VU'
-        self._update_vu_meters()
-
-        # track = self.song().view.selected_track
-        # drum_device = self._drum_group_finder.drum_group
-        # self._step_sequencer.set_drum_group_device(drum_device)
-        # self._drum_component.set_drum_group_device(drum_device)
-        # if track == None or track.is_foldable or track in self.song().return_tracks or track == self.song().master_track or track.is_frozen:
-        #     self._user_modes.selected_mode = 'disabled'
-        # elif track and track.has_audio_input:
-        #     self._user_modes.selected_mode = 'disabled'
-        #     #self._note_modes.selected_mode = 'looper'
-        # elif drum_device:
-        #     self._user_modes.selected_mode = 'drums'
-        #else:
-        #    self._user_modes.selected_mode = 'instrument'
+        self._update_vu_meters()  
         self.reset_controlled_track()
 
 
         
     def _update_vu_meters(self):
-        if self._vu == None & self._user_modes.selected_mode == 'VU':
+        # self._vu = None
+        # self._vu = VUMeters(self)
+
+        if self._vu == None:
             self._vu = VUMeters(self._parent)
+            # self._vu = VUMeters(self)
         else:
             self._vu.disconnect()
         self._vu.observe( int(self._session_zoom._session.track_offset()) )
+
+    def _vu_mode_layers(self):
+        return [self._vu, self._view_control, self._session_zoom]#, self._mixer
+
 
 
     def enter_note_mode_layout(self):
@@ -589,7 +613,7 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         # self._matrix_modes.add_mode('user2', self._user2_mode_layers())
 
         self._matrix_modes.add_mode('session', self._session_mode_layers())
-        self._matrix_modes.add_mode('VU', self._session_mode_layers())
+        self._matrix_modes.add_mode('VU', self._vu_mode_layers())
 
 
 
@@ -602,6 +626,8 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
 
     def _session_mode_layers(self):
         return [self._session, self._view_control, self._session_zoom]#, self._mixer
+
+
 
 
     def _user_mode_layers(self):

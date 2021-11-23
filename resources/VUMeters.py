@@ -54,7 +54,7 @@ class VUMeter():
       self.parent.clip_warning(True)
     else:
 
-      if self.master and self.parent._clipping:
+      if self.master and self.parent._clipping:      
         self.parent._parent._session._change_offsets(0, 1) 
         self.parent._parent._session._change_offsets(0, -1) 
         self.parent._clipping = False
@@ -221,18 +221,23 @@ class VUMeters(ControlSurfaceComponent):
           button = row[button_index]
           # Passing True to send_value forces it to happen even when the button in question is MIDI mapped
           if clipping:
-            button.send_value(LED_RED, True)
+            # button.send_value(LED_RED, True)
+            button.send_value(LED_RED)
           else:
-            button.send_value(LED_OFF, True)
-            self._parent._track_stop_buttons[button_index].send_value(LED_OFF, True) #also zero the clip stop buttons when used as a reset
+            # button.send_value(LED_OFF, True)
+            button.send_value(LED_OFF)
+            # self._parent._track_stop_buttons[button_index].send_value(LED_OFF, True) #also zero the clip stop buttons when used as a reset
+            self._parent._track_stop_buttons[button_index].send_value(LED_OFF) #also zero the clip stop buttons when used as a reset
 
     def set_master_leds(self, level):
         for scene_index in range(CLIP_GRID_Y):
             scene = self._parent._session.scene(scene_index)
             if scene_index >= (CLIP_GRID_Y - level):
-              scene._launch_button.send_value(LED_ON, True)
+              # scene._launch_button.send_value(LED_ON, True)
+              scene._launch_button.send_value(LED_ON)
             else:
-              scene._launch_button.send_value(LED_OFF, True)
+              # scene._launch_button.send_value(LED_OFF, True)
+              scene._launch_button.send_value(LED_OFF)
 
 
     # Iterate through every column in the matrix, light up the LEDs based on the level
@@ -244,13 +249,17 @@ class VUMeters(ControlSurfaceComponent):
             button = column[index] 
             if index >= (6 - level): 
               if index < 1:
-                button.send_value(LED_RED, True)
+                # button.send_value(LED_RED, True)
+                button.send_value(LED_RED)
               elif index < 2:
-                button.send_value(LED_ORANGE, True)
+                # button.send_value(LED_ORANGE, True)
+                button.send_value(LED_ORANGE)
               else:
-                button.send_value(LED_ON, True)
+                # button.send_value(LED_ON, True)
+                button.send_value(LED_ON)
             else:
-              button.send_value(LED_OFF, True)
+              # button.send_value(LED_OFF, True)
+              button.send_value(LED_OFF)
 
     # boilerplate
     def update(self):
