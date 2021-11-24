@@ -22,11 +22,11 @@ LED_ORANGE = 13
 
 # Scaling constants. Narrows the db range we display to 0db-21db or thereabouts
 CHANNEL_SCALE_MAX = 0.92
-CHANNEL_SCALE_MIN = 0.52
-CHANNEL_SCALE_INCREMENTS = 6
+CHANNEL_SCALE_MIN = 0.10#0.52
+CHANNEL_SCALE_INCREMENTS = 5
 
 MASTER_SCALE_MAX = 0.92
-MASTER_SCALE_MIN = 0.52
+MASTER_SCALE_MIN = 0.10#0.52
 MASTER_SCALE_INCREMENTS = 5
 
 RMS_FRAMES = 2
@@ -121,7 +121,7 @@ class VUMeter():
 class VUMeters(ControlSurfaceComponent):
     'standalone class used to handle VU meters'
 
-    def __init__(self, parent):
+    def __init__(self, parent, *a, **k):
         # Boilerplate
         ControlSurfaceComponent.__init__(self)
         self._parent = parent

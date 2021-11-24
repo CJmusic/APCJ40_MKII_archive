@@ -536,15 +536,26 @@ class APCJ40_MkII(APC, OptimizedControlSurface):
         #     _button_rows.append(button_row)
 
         # track_stop_buttons = [ ConfigurableButtonElement(True, MIDI_NOTE_TYPE, index, 52) for index in range(8) ]
+        # self._button_rows = self._matrix_rows_raw
+        # self._track_stop_buttons = self._stop_buttons 
+        # self._scene_launch_buttons = self._scene_launch_buttons
+        # self._matrix = self._double_press_matrix
 
-        self._button_rows = self._matrix_rows_raw
-        self._track_stop_buttons = self._stop_buttons 
-        self._scene_launch_buttons = self._scene_launch_buttons
-        self._matrix = self._double_press_matrix
-        parent = self
-        # self._parent = Layer(name = 'VU_modes', _button_rows= _button_rows)
+        # parent = self
+        self._parent = self 
+        self._parent._button_rows = self._matrix_rows_raw
+        self._parent._track_stop_buttons = self._stop_buttons 
+        self._parent._scene_launch_buttons = self._scene_launch_buttons
+        self._parent._matrix = self._double_press_matrix
+
+        # self._parent.layer = Layer( )
+
+        # self._parent.layer() = 
         # self._parent = Layer()
-        self._vu = VUMeters(parent)
+        
+        self._vu = VUMeters(self._parent)
+        # self._vu = VUMeters(self._parent, _button_rows = self._matrix_rows_raw, _track_stop_buttons =self._stop_buttons, _scene_launch_buttons = self._scene_launch_buttons, _matrix = self._double_press_matrix)
+        # self._vu.layer = Layer( _track_stop_buttons =self._stop_buttons, _scene_launch_buttons = self._scene_launch_buttons, _matrix = self._double_press_matrix )
         self._shift_button.add_value_listener(self._shift_value)
         # self._create_vu_layer(self)
         # self._button_rows = 
