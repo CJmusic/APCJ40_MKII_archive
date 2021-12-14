@@ -1,6 +1,9 @@
 # APCJ40_MKII
 by chris joseph
 
+NOTE: THIS VERSION OF THE SCRIPT IS OLD, PLEASE ACCESS: https://github.com/CJmusic/APC40_CJedit INSTEAD. 
+FOR ABLETON LIVE 10 SEE https://github.com/CJmusic/APC40_MkIIx
+
 A custom remote script for the APC40 MKII for Ableton Live 11. 
 
 Changes:
